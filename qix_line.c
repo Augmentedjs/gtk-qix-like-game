@@ -10,7 +10,7 @@
 // Line properties
 static double line_x1, line_y1, line_x2, line_y2;
 static double dx1, dy1, dx2, dy2;
-static int width = 400, height = 400;
+static int width = 640, height = 480;
 static double offset = 5.0;
 
 // Color properties
@@ -78,6 +78,25 @@ static void draw_background(cairo_t *cr) {
     cairo_paint(cr);
 }
 
+static void draw_text(cairo_t *cr) {
+    // Set the color for the text (dark gray)
+    cairo_set_source_rgb(cr, 0.3, 0.3, 0.3);
+    cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_font_size(cr, 48);
+
+    // Get the text extents to center it
+    cairo_text_extents_t extents;
+    cairo_text_extents(cr, "QIX", &extents);
+
+    // Calculate the position to center the text
+    double x = (width - extents.width) / 2 - extents.x_bearing;
+    double y = (height - extents.height) / 2 - extents.y_bearing;
+
+    // Move to the position and show the text
+    cairo_move_to(cr, x, y);
+    cairo_show_text(cr, "QIX");
+}
+
 static void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, double opacity, double width, int color_index) {
     // Set the color for the line
     cairo_set_source_rgba(cr, colors[color_index][0], colors[color_index][1], colors[color_index][2], opacity);
@@ -96,6 +115,9 @@ static void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, d
 static void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
     // Draw the background
     draw_background(cr);
+
+    // Draw the text
+    draw_text(cr);
 
     // Draw the trails first
     for (int i = 0; i < TRAIL_COUNT; i++) {
@@ -190,6 +212,9 @@ static void activate(GtkApplication *app, gpointer user_data) {
     gtk_window_set_title(GTK_WINDOW(window), "QIX Style Line Drawing with Trails");
     gtk_window_set_default_size(GTK_WINDOW(window), width, height);
 
+    // Disable window resizing
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+
     // Create a drawing area widget
     drawing_area = gtk_drawing_area_new();
     gtk_widget_set_size_request(drawing_area, width, height);
@@ -213,7 +238,7 @@ int main(int argc, char **argv) {
     int status;
 
     // Create a new GTK application
-    app = gtk_application_new("com.example.qixline", G_APPLICATION_DEFAULT_FLAGS);
+    app = gtk_application_new("com.augmented.qixline", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
 
     // Run the application
