@@ -5,12 +5,33 @@
 #include <math.h>
 
 #define TRAIL_COUNT 5
+#define COLOR_COUNT 15
 
 // Line properties
 static double line_x1, line_y1, line_x2, line_y2;
 static double dx1, dy1, dx2, dy2;
 static int width = 400, height = 400;
 static double offset = 5.0;
+
+// Color properties
+static int color_index = 0;
+static double colors[COLOR_COUNT][3] = {
+    {0.0, 0.0, 0.5},    // Blue
+    {0.0, 0.5, 0.0},    // Green
+    {0.0, 0.5, 0.5},    // Cyan
+    {0.5, 0.0, 0.0},    // Red
+    {0.5, 0.0, 0.5},    // Magenta
+    {0.5, 0.5, 0.0},    // Brown
+    {0.75, 0.75, 0.75}, // Light Gray
+    {0.5, 0.5, 0.5},    // Dark Gray
+    {0.5, 0.5, 1.0},    // Light Blue
+    {0.5, 1.0, 0.5},    // Light Green
+    {0.5, 1.0, 1.0},    // Light Cyan
+    {1.0, 0.5, 0.5},    // Light Red
+    {1.0, 0.5, 1.0},    // Light Magenta
+    {1.0, 1.0, 0.5},    // Yellow
+    {1.0, 1.0, 1.0}     // White
+};
 
 // Flag to indicate if the application is running
 static gboolean app_running = TRUE;
@@ -51,9 +72,15 @@ static void initialize_positions_and_directions() {
     }
 }
 
-static void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, double opacity, double width) {
-    // Set the color for the line (red in this case)
-    cairo_set_source_rgba(cr, 1.0, 0.0, 0.0, opacity);
+static void draw_background(cairo_t *cr) {
+    // Set the background color to black
+    cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
+    cairo_paint(cr);
+}
+
+static void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, double opacity, double width, int color_index) {
+    // Set the color for the line
+    cairo_set_source_rgba(cr, colors[color_index][0], colors[color_index][1], colors[color_index][2], opacity);
     // Set the line width
     cairo_set_line_width(cr, width);
 
@@ -67,14 +94,17 @@ static void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, d
 }
 
 static void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
+    // Draw the background
+    draw_background(cr);
+
     // Draw the trails first
     for (int i = 0; i < TRAIL_COUNT; i++) {
         if (trails[i].opacity > 0) {
-            draw_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0);
+            draw_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0, color_index);
         }
     }
     // Draw the current line
-    draw_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0, 2.0);
+    draw_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0, 2.0, color_index);
 }
 
 static gboolean on_timeout(gpointer user_data) {
@@ -89,16 +119,28 @@ static gboolean on_timeout(gpointer user_data) {
     line_y1 += dy1;
 
     // Bounce off the walls for first point
-    if (line_x1 <= 0 || line_x1 >= width) dx1 = -dx1;
-    if (line_y1 <= 0 || line_y1 >= height) dy1 = -dy1;
+    if (line_x1 <= 0 || line_x1 >= width) {
+        dx1 = -dx1;
+        color_index = (color_index + 1) % COLOR_COUNT;
+    }
+    if (line_y1 <= 0 || line_y1 >= height) {
+        dy1 = -dy1;
+        color_index = (color_index + 1) % COLOR_COUNT;
+    }
 
     // Update line position for second point
     line_x2 += dx2;
     line_y2 += dy2;
 
     // Bounce off the walls for second point
-    if (line_x2 <= 0 || line_x2 >= width) dx2 = -dx2;
-    if (line_y2 <= 0 || line_y2 >= height) dy2 = -dy2;
+    if (line_x2 <= 0 || line_x2 >= width) {
+        dx2 = -dx2;
+        color_index = (color_index + 1) % COLOR_COUNT;
+    }
+    if (line_y2 <= 0 || line_y2 >= height) {
+        dy2 = -dy2;
+        color_index = (color_index + 1) % COLOR_COUNT;
+    }
 
     // Update trails
     for (int i = TRAIL_COUNT - 1; i > 0; i--) {
