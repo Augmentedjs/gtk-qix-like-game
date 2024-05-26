@@ -7,7 +7,7 @@ CC = gcc
 CFLAGS = $(shell pkg-config --cflags gtk4)
 
 # Linker flags
-LDFLAGS = $(shell pkg-config --libs gtk4)
+LDFLAGS = $(shell pkg-config --libs gtk4) -lm
 
 # Source files
 SRCS = qix_line.c

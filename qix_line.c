@@ -2,6 +2,7 @@
 #include <cairo.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 #define TRAIL_COUNT 5
 
@@ -9,6 +10,13 @@
 static double line_x1, line_y1, line_x2, line_y2;
 static double dx1, dy1, dx2, dy2;
 static int width = 400, height = 400;
+static double offset = 5.0;
+
+// Flag to indicate if the application is running
+static gboolean app_running = TRUE;
+
+// Timeout ID
+static guint timeout_id;
 
 typedef struct {
     double x1, y1, x2, y2;
@@ -43,11 +51,11 @@ static void initialize_positions_and_directions() {
     }
 }
 
-static void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, double opacity) {
+static void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, double opacity, double width) {
     // Set the color for the line (red in this case)
     cairo_set_source_rgba(cr, 1.0, 0.0, 0.0, opacity);
     // Set the line width
-    cairo_set_line_width(cr, 2.0);
+    cairo_set_line_width(cr, width);
 
     // Move to the starting point of the line
     cairo_move_to(cr, x1, y1);
@@ -59,18 +67,22 @@ static void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, d
 }
 
 static void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
-    // Draw the trails
+    // Draw the trails first
     for (int i = 0; i < TRAIL_COUNT; i++) {
         if (trails[i].opacity > 0) {
-            draw_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity);
+            draw_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0);
         }
     }
     // Draw the current line
-    draw_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0);
+    draw_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0, 2.0);
 }
 
 static gboolean on_timeout(gpointer user_data) {
     GtkWidget *drawing_area = GTK_WIDGET(user_data);
+
+    if (!GTK_IS_WIDGET(drawing_area) || !app_running) {
+        return G_SOURCE_REMOVE;
+    }
 
     // Update line position for first point
     line_x1 += dx1;
@@ -91,19 +103,37 @@ static gboolean on_timeout(gpointer user_data) {
     // Update trails
     for (int i = TRAIL_COUNT - 1; i > 0; i--) {
         trails[i] = trails[i - 1];
-        trails[i].opacity -= 0.2; // Decrease opacity for fading effect
+        trails[i].opacity -= 1.0 / TRAIL_COUNT; // Decrease opacity for fading effect
     }
+
+    // Set the position for the first trail
     trails[0].x1 = line_x1;
     trails[0].y1 = line_y1;
     trails[0].x2 = line_x2;
     trails[0].y2 = line_y2;
     trails[0].opacity = 1.0;
 
+    // Apply offset to the remaining trails
+    for (int i = 1; i < TRAIL_COUNT; i++) {
+        trails[i].x1 = trails[i - 1].x1 - offset * dx1 / sqrt(dx1 * dx1 + dy1 * dy1);
+        trails[i].y1 = trails[i - 1].y1 - offset * dy1 / sqrt(dx1 * dx1 + dy1 * dy1);
+        trails[i].x2 = trails[i - 1].x2 - offset * dx2 / sqrt(dx2 * dx2 + dy2 * dy2);
+        trails[i].y2 = trails[i - 1].y2 - offset * dy2 / sqrt(dx2 * dx2 + dy2 * dy2);
+    }
+
     // Queue redraw of the drawing area
     gtk_widget_queue_draw(drawing_area);
 
     // Continue calling this function
     return G_SOURCE_CONTINUE;
+}
+
+static void on_window_destroy(GtkWidget *widget, gpointer user_data) {
+    app_running = FALSE;
+    if (timeout_id > 0) {
+        g_source_remove(timeout_id);
+        timeout_id = 0;
+    }
 }
 
 static void activate(GtkApplication *app, gpointer user_data) {
@@ -127,7 +157,10 @@ static void activate(GtkApplication *app, gpointer user_data) {
     gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), on_draw, NULL, NULL);
 
     // Add a timeout to update the line position regularly
-    g_timeout_add(16, on_timeout, drawing_area);
+    timeout_id = g_timeout_add_full(G_PRIORITY_DEFAULT, 16, on_timeout, drawing_area, NULL);
+
+    // Connect the destroy signal to stop the timeout when the window is closed
+    g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroy), NULL);
 
     // Present the window
     gtk_window_present(GTK_WINDOW(window));
