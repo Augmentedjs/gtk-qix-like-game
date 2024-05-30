@@ -26,7 +26,7 @@ sudo apt install build-essential autoconf automake libgtk-4-dev libcairo2-dev li
 
 ## Instructions
 
-1 Clone the Repository
+1. Clone the Repository
 
 ``` sh
 git clone git@github.com:Augmentedjs/gtk-qix-demo.git
@@ -91,4 +91,4 @@ Control Key: Allow the player to move off the border in one direction.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the Apache 2.0 License. See the LICENSE file for details.
