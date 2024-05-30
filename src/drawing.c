@@ -1,9 +1,9 @@
 #include <gtk/gtk.h>
 #include <cairo.h>
-#include "drawing.h"
-#include "trails.h"
-#include "line.h"
-#include "player.h"
+#include "includes/drawing.h"
+#include "includes/trails.h"
+#include "includes/line.h"
+#include "includes/player.h"
 
 static double colors[COLOR_COUNT][3] = {
     {0.0, 0.0, 0.5},    // Blue

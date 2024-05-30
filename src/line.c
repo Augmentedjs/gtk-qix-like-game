@@ -1,10 +1,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
-#include "line.h"
-#include "drawing.h"
-#include "trails.h"
-#include "player.h"
+#include "includes/line.h"
+#include "includes/drawing.h"
+#include "includes/trails.h"
+#include "includes/player.h"
 
 double line_x1, line_y1, line_x2, line_y2;
 double dx1, dy1, dx2, dy2;

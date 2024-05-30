@@ -1,10 +1,10 @@
 #include <gtk/gtk.h>
-#include "drawing.h"
-#include "player.h"
-#include "line.h"
-#include "trails.h"
-#include "events.h"
-#include "globals.h"
+#include "includes/drawing.h"
+#include "includes/player.h"
+#include "includes/line.h"
+#include "includes/trails.h"
+#include "includes/events.h"
+#include "includes/globals.h"
 
 int width = 640;
 int height = 480;

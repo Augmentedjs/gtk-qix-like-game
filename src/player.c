@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 #include <cairo.h>
-#include "player.h"
+#include "includes/player.h"
 
 double player_x, player_y;
 double player_speed = 5.0;

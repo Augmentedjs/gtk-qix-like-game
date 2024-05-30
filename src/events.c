@@ -1,8 +1,8 @@
 #include <gtk/gtk.h>
-#include "player.h"
-#include "events.h"
-#include "line.h"
-#include "globals.h"
+#include "includes/player.h"
+#include "includes/events.h"
+#include "includes/line.h"
+#include "includes/globals.h"
 
 gboolean on_timeout(gpointer user_data) {
     GtkWidget *drawing_area = GTK_WIDGET(user_data);

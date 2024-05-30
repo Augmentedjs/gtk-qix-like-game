@@ -1,4 +1,6 @@
 bin_PROGRAMS = qix_line
-qix_line_SOURCES = main.c drawing.c player.c line.c trails.c events.c
-qix_line_CFLAGS = $(GTK_CFLAGS)
+qix_line_SOURCES = src/main.c src/drawing.c src/player.c src/line.c src/trails.c src/events.c
+
+# Add optimization flags
+AM_CFLAGS = -O2 $(GTK_CFLAGS) -Iincludes
 qix_line_LDADD = $(GTK_LIBS) -lm
