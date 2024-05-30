@@ -28,8 +28,8 @@ sudo apt install build-essential autoconf automake libgtk-4-dev libcairo2-dev li
 
 ### Game Controls
 
-Arrow Keys: Move the player around the edges of the window.
-Control Key: Allow the player to move off the border in one direction.
+- **Arrow Keys:** Move the player around the edges of the window.
+- **Control Key:** Allow the player to move off the border in one direction.
 
 ### Rules
 
