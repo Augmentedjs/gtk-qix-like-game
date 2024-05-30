@@ -1,6 +1,8 @@
 #ifndef LINE_H
 #define LINE_H
 
+#include <gtk/gtk.h>
+
 #define TRAIL_COUNT 5
 
 void initialize_positions_and_directions(int width, int height);
@@ -12,4 +14,3 @@ extern int color_index;
 extern double offset;
 
 #endif
-

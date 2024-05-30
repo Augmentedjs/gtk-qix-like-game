@@ -11,4 +11,3 @@ typedef struct {
 extern Trail trails[TRAIL_COUNT];
 
 #endif
-

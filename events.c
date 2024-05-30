@@ -2,9 +2,7 @@
 #include "player.h"
 #include "events.h"
 #include "line.h"
-
-static gboolean app_running = TRUE;
-static guint timeout_id;
+#include "globals.h"
 
 gboolean on_timeout(gpointer user_data) {
     GtkWidget *drawing_area = GTK_WIDGET(user_data);
@@ -55,4 +53,3 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
     gtk_widget_queue_draw(GTK_WIDGET(user_data)); // Redraw the area
     return TRUE;
 }
-

@@ -7,4 +7,3 @@ void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, double o
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data);
 
 #endif
-

@@ -82,4 +82,3 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
     // Draw the player
     draw_player(cr);
 }
-

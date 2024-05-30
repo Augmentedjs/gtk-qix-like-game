@@ -1,10 +1,15 @@
 #include <math.h>
+#include <stdlib.h>
+#include <time.h>
 #include "line.h"
 #include "drawing.h"
+#include "trails.h"
+#include "player.h"
 
-static double line_x1, line_y1, line_x2, line_y2;
-static double dx1, dy1, dx2, dy2;
-static int color_index = 0;
+double line_x1, line_y1, line_x2, line_y2;
+double dx1, dy1, dx2, dy2;
+int color_index = 0;
+double offset = 5.0;
 
 void initialize_positions_and_directions(int width, int height) {
     // Seed the random number generator
@@ -94,4 +99,3 @@ void update_positions_and_trails(int width, int height) {
         trails[i].y2 = trails[i - 1].y2 - offset * dy2 / sqrt(dx2 * dx2 + dy2 * dy2);
     }
 }
-

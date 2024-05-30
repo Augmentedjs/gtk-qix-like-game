@@ -7,5 +7,7 @@ void draw_player(cairo_t *cr);
 void update_player_position(double x, double y);
 void initialize_player_position(int width, int height);
 
-#endif
+extern double player_x, player_y;
+extern double player_speed;
 
+#endif

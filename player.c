@@ -2,8 +2,8 @@
 #include <cairo.h>
 #include "player.h"
 
-static double player_x, player_y;
-static double player_speed = 5.0;
+double player_x, player_y;
+double player_speed = 5.0;
 static double player_colors[4][3] = {
     {0.6, 0.6, 0.6}, // Light Gray
     {0.5, 0.5, 0.5}, // Medium Gray
@@ -36,4 +36,3 @@ void initialize_player_position(int width, int height) {
     player_x = width / 2;
     player_y = height;
 }
-

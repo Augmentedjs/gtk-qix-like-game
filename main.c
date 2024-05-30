@@ -4,11 +4,12 @@
 #include "line.h"
 #include "trails.h"
 #include "events.h"
+#include "globals.h"
 
-static int width = 640;
-static int height = 480;
-static gboolean app_running = TRUE;
-static guint timeout_id;
+int width = 640;
+int height = 480;
+gboolean app_running = TRUE;
+guint timeout_id;
 
 static void on_window_destroy(GtkWidget *widget, gpointer user_data) {
     app_running = FALSE;
@@ -73,4 +74,3 @@ int main(int argc, char **argv) {
 
     return status;
 }
-
