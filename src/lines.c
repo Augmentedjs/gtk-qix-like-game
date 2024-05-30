@@ -52,13 +52,44 @@ void complete_shape_to_boundary() {
     Point last_point = player_points[player_point_count - 1];
     Point first_point = player_points[0];
 
-    // Add points to form right angles and close the shape
-    if (last_point.x != first_point.x) {
-        // Add vertical line to boundary
-        player_points[player_point_count++] = (Point){last_point.x, first_point.y};
-    } else if (last_point.y != first_point.y) {
-        // Add horizontal line to boundary
-        player_points[player_point_count++] = (Point){first_point.x, last_point.y};
+    // If the last point is already at the boundary, add points to close the shape
+    if (last_point.x == 1 || last_point.x == width - 2 || last_point.y == 1 || last_point.y == height - 2) {
+        if (last_point.x == 1) {
+            if (last_point.y != height - 2) {
+                player_points[player_point_count++] = (Point){1, height - 2};
+            }
+            if (first_point.y != height - 2) {
+                player_points[player_point_count++] = (Point){first_point.x, height - 2};
+            }
+        } else if (last_point.x == width - 2) {
+            if (last_point.y != 1) {
+                player_points[player_point_count++] = (Point){width - 2, 1};
+            }
+            if (first_point.y != 1) {
+                player_points[player_point_count++] = (Point){first_point.x, 1};
+            }
+        } else if (last_point.y == 1) {
+            if (last_point.x != width - 2) {
+                player_points[player_point_count++] = (Point){width - 2, 1};
+            }
+            if (first_point.x != width - 2) {
+                player_points[player_point_count++] = (Point){width - 2, first_point.y};
+            }
+        } else if (last_point.y == height - 2) {
+            if (last_point.x != 1) {
+                player_points[player_point_count++] = (Point){1, height - 2};
+            }
+            if (first_point.x != 1) {
+                player_points[player_point_count++] = (Point){1, first_point.y};
+            }
+        }
+    } else {
+        // Add points to form right angles and close the shape
+        if (last_point.x != first_point.x) {
+            player_points[player_point_count++] = (Point){last_point.x, first_point.y};
+        } else if (last_point.y != first_point.y) {
+            player_points[player_point_count++] = (Point){first_point.x, last_point.y};
+        }
     }
 }
 
