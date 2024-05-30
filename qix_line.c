@@ -78,7 +78,7 @@ static void initialize_positions_and_directions() {
         trails[i].x1 = line_x1;
         trails[i].y1 = line_y1;
         trails[i].x2 = line_x2;
-        trails[i].y2 = line_x2;
+        trails[i].y2 = line_y2;
         trails[i].opacity = 0.0;
     }
 
@@ -236,27 +236,28 @@ static gboolean on_timeout(gpointer user_data) {
 }
 
 static gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data) {
+    gboolean ctrl_pressed = state & GDK_CONTROL_MASK;
     switch (keyval) {
         case GDK_KEY_Left:
-            if (player_y == 0 || player_y == height) { // Moving horizontally on the top or bottom border
+            if (player_y == 0 || player_y == height || ctrl_pressed) { // Moving horizontally on the top or bottom border or Ctrl pressed
                 player_x -= player_speed;
                 if (player_x < 0) player_x = 0;
             }
             break;
         case GDK_KEY_Right:
-            if (player_y == 0 || player_y == height) { // Moving horizontally on the top or bottom border
+            if (player_y == 0 || player_y == height || ctrl_pressed) { // Moving horizontally on the top or bottom border or Ctrl pressed
                 player_x += player_speed;
                 if (player_x > width) player_x = width;
             }
             break;
         case GDK_KEY_Up:
-            if (player_x == 0 || player_x == width) { // Moving vertically on the left or right border
+            if (player_x == 0 || player_x == width || ctrl_pressed) { // Moving vertically on the left or right border or Ctrl pressed
                 player_y -= player_speed;
                 if (player_y < 0) player_y = 0;
             }
             break;
         case GDK_KEY_Down:
-            if (player_x == 0 || player_x == width) { // Moving vertically on the left or right border
+            if (player_x == 0 || player_x == width || ctrl_pressed) { // Moving vertically on the left or right border or Ctrl pressed
                 player_y += player_speed;
                 if (player_y > height) player_y = height;
             }
