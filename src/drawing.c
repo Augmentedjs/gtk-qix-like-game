@@ -4,8 +4,10 @@
 #include "includes/trails.h"
 #include "includes/line.h"
 #include "includes/player.h"
+#include "includes/lines.h"
+#include "includes/globals.h"
 
-static double colors[COLOR_COUNT][3] = {
+double colors[COLOR_COUNT][3] = {
     {0.0, 0.0, 0.5},    // Blue
     {0.0, 0.5, 0.0},    // Green
     {0.0, 0.5, 0.5},    // Cyan
@@ -23,10 +25,16 @@ static double colors[COLOR_COUNT][3] = {
     {1.0, 1.0, 1.0}     // White
 };
 
-static void draw_background(cairo_t *cr) {
+static void draw_background(cairo_t *cr, int width, int height) {
     // Set the background color to black
     cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
     cairo_paint(cr);
+
+    // Draw the white border using VGA white color
+    cairo_set_source_rgb(cr, colors[14][0], colors[14][1], colors[14][2]);
+    cairo_set_line_width(cr, 2.0);
+    cairo_rectangle(cr, 1, 1, width - 2, height - 2);
+    cairo_stroke(cr);
 }
 
 static void draw_text(cairo_t *cr, int width, int height) {
@@ -64,8 +72,8 @@ void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, double o
 }
 
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
-    // Draw the background
-    draw_background(cr);
+    // Draw the background and the white border
+    draw_background(cr, width, height);
 
     // Draw the text
     draw_text(cr, width, height);
@@ -78,6 +86,9 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
     }
     // Draw the current line
     draw_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0, 2.0, color_index);
+
+    // Draw player-drawn lines
+    draw_player_lines(cr);
 
     // Draw the player
     draw_player(cr);

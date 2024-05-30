@@ -9,5 +9,6 @@ void initialize_player_position(int width, int height);
 
 extern double player_x, player_y;
 extern double player_speed;
+extern double last_player_x, last_player_y;
 
 #endif
