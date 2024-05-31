@@ -1,6 +1,8 @@
 #ifndef LINES_H
 #define LINES_H
 
+#include <cairo.h>
+
 #define MAX_LINES 1000
 #define MAX_POINTS 2000
 #define MAX_SHAPES 100

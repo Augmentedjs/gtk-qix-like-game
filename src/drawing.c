@@ -1,5 +1,3 @@
-#include <gtk/gtk.h>
-#include <cairo.h>
 #include "includes/drawing.h"
 #include "includes/trails.h"
 #include "includes/line.h"

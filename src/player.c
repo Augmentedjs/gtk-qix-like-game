@@ -1,5 +1,3 @@
-#include <gtk/gtk.h>
-#include <cairo.h>
 #include "includes/player.h"
 #include "includes/lines.h"
 #include "includes/globals.h"

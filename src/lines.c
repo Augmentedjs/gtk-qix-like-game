@@ -1,4 +1,3 @@
-#include <cairo.h>
 #include "includes/lines.h"
 #include "includes/globals.h"
 

@@ -1,4 +1,3 @@
-#include <gtk/gtk.h>
 #include "includes/player.h"
 #include "includes/events.h"
 #include "includes/line.h"
