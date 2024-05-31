@@ -52,35 +52,41 @@ void complete_shape_to_boundary() {
     Point last_point = player_points[player_point_count - 1];
     Point first_point = player_points[0];
 
+    // Adjust the last point to ensure it aligns with the boundaries correctly
+    if (last_point.x <= 0) last_point.x = 0;
+    if (last_point.x >= width) last_point.x = width;
+    if (last_point.y <= 0) last_point.y = 0;
+    if (last_point.y >= height) last_point.y = height;
+
     // If the last point is already at the boundary, add points to close the shape
-    if (last_point.x == 1 || last_point.x == width - 2 || last_point.y == 1 || last_point.y == height - 2) {
-        if (last_point.x == 1) {
-            if (last_point.y != height - 2) {
-                player_points[player_point_count++] = (Point){1, height - 2};
+    if (last_point.x == 0 || last_point.x == width || last_point.y == 0 || last_point.y == height) {
+        if (last_point.x == 0) {
+            if (last_point.y != 0) {
+                player_points[player_point_count++] = (Point){0, 0};
             }
-            if (first_point.y != height - 2) {
-                player_points[player_point_count++] = (Point){first_point.x, height - 2};
+            if (first_point.y != 0) {
+                player_points[player_point_count++] = (Point){first_point.x, 0};
             }
-        } else if (last_point.x == width - 2) {
-            if (last_point.y != 1) {
-                player_points[player_point_count++] = (Point){width - 2, 1};
+        } else if (last_point.x == width) {
+            if (last_point.y != height) {
+                player_points[player_point_count++] = (Point){width, height};
             }
-            if (first_point.y != 1) {
-                player_points[player_point_count++] = (Point){first_point.x, 1};
+            if (first_point.y != height) {
+                player_points[player_point_count++] = (Point){first_point.x, height};
             }
-        } else if (last_point.y == 1) {
-            if (last_point.x != width - 2) {
-                player_points[player_point_count++] = (Point){width - 2, 1};
+        } else if (last_point.y == 0) {
+            if (last_point.x != width) {
+                player_points[player_point_count++] = (Point){width, 0};
             }
-            if (first_point.x != width - 2) {
-                player_points[player_point_count++] = (Point){width - 2, first_point.y};
+            if (first_point.x != width) {
+                player_points[player_point_count++] = (Point){width, first_point.y};
             }
-        } else if (last_point.y == height - 2) {
-            if (last_point.x != 1) {
-                player_points[player_point_count++] = (Point){1, height - 2};
+        } else if (last_point.y == height) {
+            if (last_point.x != 0) {
+                player_points[player_point_count++] = (Point){0, height};
             }
-            if (first_point.x != 1) {
-                player_points[player_point_count++] = (Point){1, first_point.y};
+            if (first_point.x != 0) {
+                player_points[player_point_count++] = (Point){0, first_point.y};
             }
         }
     } else {
@@ -90,6 +96,11 @@ void complete_shape_to_boundary() {
         } else if (last_point.y != first_point.y) {
             player_points[player_point_count++] = (Point){first_point.x, last_point.y};
         }
+    }
+
+    // Ensure the last point closes the shape correctly
+    if (player_points[player_point_count - 1].x != first_point.x || player_points[player_point_count - 1].y != first_point.y) {
+        player_points[player_point_count++] = first_point;
     }
 }
 

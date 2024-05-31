@@ -15,7 +15,7 @@ static void draw_background(cairo_t *cr, int width, int height) {
     // Draw the white border using VGA white color
     cairo_set_source_rgb(cr, colors[14][0], colors[14][1], colors[14][2]);
     cairo_set_line_width(cr, 2.0);
-    cairo_rectangle(cr, 1, 1, width - 2, height - 2);
+    cairo_rectangle(cr, 0, 0, width, height);
     cairo_stroke(cr);
 }
 
