@@ -1,4 +1,4 @@
-# gtk-qix-demo - QIX Style Line Drawing Game
+# QIX Style Line Drawing Game
 
 ## Introduction
 
@@ -9,13 +9,16 @@ More to follow as game is completed.
 ## Dependencies
 
 ### Linux
+These are the requirements for Linux but also tested configurations
 
-- **Operating System:** Debian-based Linux distribution (e.g., Ubuntu, Debian)
-- **Compiler:** GCC (GNU Compiler Collection)
+- **Operating System:**
+  - Debian-based Linux distribution (developed on Debian Sid Trixie)
+- **Compiler:**
+  - GCC 13 (GNU Compiler Collection)
 - **Libraries:**
   - GTK 4
   - Cairo
-  - GLib
+  - GLib 2
 
 To install the required dependencies on a Debian-based system, you can use the following command:
 
@@ -40,8 +43,8 @@ TBD
 ### Clone the Repository
 
 ``` sh
-git clone git@github.com:Augmentedjs/gtk-qix-demo.git
-cd qix-line-drawing-game
+git clone git@github.com:Augmentedjs/gtk-qix-like-game.git
+cd gtk-qix-like-game
 ```
 
 ### Generate the Build System Files
@@ -97,6 +100,7 @@ After building the project, you can run the game using the following command:
 - Add game rules and objectives.
 - Implement additional game features.
 - Improve graphics and animations.
+- Sound effects
 
 ## License
 
