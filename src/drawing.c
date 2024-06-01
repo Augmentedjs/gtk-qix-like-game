@@ -4,6 +4,7 @@
 #include "includes/player.h"
 #include "includes/lines.h"
 #include "includes/globals.h"
+#include <stdio.h> // Include for debug prints
 
 static void draw_background(cairo_t *cr, int width, int height) {
     // Set the background color to black
