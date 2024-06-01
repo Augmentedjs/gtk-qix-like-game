@@ -1,0 +1,15 @@
+# Makefile.obj
+# This Makefile handles moving object files to the obj directory.
+
+objdir := obj
+
+all: move-objects
+
+move-objects:
+	@mkdir -p $(objdir)
+	@mv src/*.o $(objdir)/
+
+clean:
+	@rm -rf $(objdir)
+
+.PHONY: all move-objects clean
