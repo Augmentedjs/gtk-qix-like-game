@@ -7,7 +7,7 @@ all: move-objects
 
 move-objects:
 	@mkdir -p $(objdir)
-	@mv *.o $(objdir)/
+	@mv src/*.o $(objdir)/
 
 clean:
 	@rm -rf $(objdir)

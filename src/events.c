@@ -1,6 +1,6 @@
 #include "includes/player.h"
 #include "includes/events.h"
-#include "includes/line.h"
+#include "includes/qix_monster.h"
 #include "includes/globals.h"
 #include "includes/trails.h"
 
