@@ -11,6 +11,8 @@ extern gboolean app_running;
 extern guint timeout_id;
 extern gboolean drawing_complete;
 
+extern int last_dx, last_dy;
+
 extern double colors[COLOR_COUNT][3];
 
 #endif

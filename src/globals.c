@@ -23,3 +23,6 @@ double colors[COLOR_COUNT][3] = {
     {1.0, 1.0, 0.5},    // Yellow
     {1.0, 1.0, 1.0}     // White
 };
+
+int last_dx = 0;
+int last_dy = 0;
