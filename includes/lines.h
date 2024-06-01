@@ -8,16 +8,16 @@
 #define MAX_SHAPES 100
 
 typedef struct {
-    double x1, y1, x2, y2;
+  double x1, y1, x2, y2;
 } Line;
 
 typedef struct {
-    double x, y;
+  double x, y;
 } Point;
 
 typedef struct {
-    Point points[MAX_POINTS];
-    int point_count;
+  Point points[MAX_POINTS];
+  int point_count;
 } Shape;
 
 extern Line player_lines[MAX_LINES];
