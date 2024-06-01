@@ -1,6 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <gtk/gtk.h>
+#include <cairo.h>
+
 #define PLAYER_DOT_COUNT 20
 
 void draw_player(cairo_t *cr);

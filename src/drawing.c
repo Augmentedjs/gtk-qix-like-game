@@ -1,29 +1,9 @@
-#include <gtk/gtk.h>
-#include <cairo.h>
 #include "includes/drawing.h"
 #include "includes/trails.h"
 #include "includes/line.h"
 #include "includes/player.h"
 #include "includes/lines.h"
 #include "includes/globals.h"
-
-double colors[COLOR_COUNT][3] = {
-    {0.0, 0.0, 0.5},    // Blue
-    {0.0, 0.5, 0.0},    // Green
-    {0.0, 0.5, 0.5},    // Cyan
-    {0.5, 0.0, 0.0},    // Red
-    {0.5, 0.0, 0.5},    // Magenta
-    {0.5, 0.5, 0.0},    // Brown
-    {0.75, 0.75, 0.75}, // Light Gray
-    {0.5, 0.5, 0.5},    // Dark Gray
-    {0.5, 0.5, 1.0},    // Light Blue
-    {0.5, 1.0, 0.5},    // Light Green
-    {0.5, 1.0, 1.0},    // Light Cyan
-    {1.0, 0.5, 0.5},    // Light Red
-    {1.0, 0.5, 1.0},    // Light Magenta
-    {1.0, 1.0, 0.5},    // Yellow
-    {1.0, 1.0, 1.0}     // White
-};
 
 static void draw_background(cairo_t *cr, int width, int height) {
     // Set the background color to black
@@ -33,7 +13,7 @@ static void draw_background(cairo_t *cr, int width, int height) {
     // Draw the white border using VGA white color
     cairo_set_source_rgb(cr, colors[14][0], colors[14][1], colors[14][2]);
     cairo_set_line_width(cr, 2.0);
-    cairo_rectangle(cr, 1, 1, width - 2, height - 2);
+    cairo_rectangle(cr, 0, 0, width, height);
     cairo_stroke(cr);
 }
 
@@ -77,6 +57,15 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
 
     // Draw the text
     draw_text(cr, width, height);
+
+    // Fill the shape if drawing is complete
+    if (drawing_complete) {
+        fill_shape(cr);
+        drawing_complete = FALSE; // Reset the flag after filling
+    }
+
+    // Draw the filled shapes
+    draw_filled_shapes(cr);
 
     // Draw the trails first
     for (int i = 0; i < TRAIL_COUNT; i++) {

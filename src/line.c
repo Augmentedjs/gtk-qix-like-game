@@ -1,6 +1,3 @@
-#include <math.h>
-#include <stdlib.h>
-#include <time.h>
 #include "includes/line.h"
 #include "includes/drawing.h"
 #include "includes/trails.h"

@@ -1,8 +1,8 @@
-#include <gtk/gtk.h>
 #include "includes/player.h"
 #include "includes/events.h"
 #include "includes/line.h"
 #include "includes/globals.h"
+#include "includes/lines.h"
 
 gboolean on_timeout(gpointer user_data) {
     GtkWidget *drawing_area = GTK_WIDGET(user_data);
@@ -23,6 +23,8 @@ gboolean on_timeout(gpointer user_data) {
 
 gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data) {
     gboolean ctrl_pressed = state & GDK_CONTROL_MASK;
+    static gboolean was_ctrl_pressed = FALSE;
+
     double new_x = player_x;
     double new_y = player_y;
 
@@ -61,6 +63,13 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
         last_player_x = new_x;
         last_player_y = new_y;
     }
+
+    if (!ctrl_pressed && was_ctrl_pressed) {
+        // Control key was released, set drawing_complete flag
+        drawing_complete = TRUE;
+    }
+
+    was_ctrl_pressed = ctrl_pressed;
 
     gtk_widget_queue_draw(GTK_WIDGET(user_data)); // Redraw the area
     return TRUE;

@@ -6,11 +6,6 @@
 #include "includes/events.h"
 #include "includes/globals.h"
 
-int width = 640;
-int height = 480;
-gboolean app_running = TRUE;
-guint timeout_id;
-
 static void on_window_destroy(GtkWidget *widget, gpointer user_data) {
     app_running = FALSE;
     if (timeout_id > 0) {

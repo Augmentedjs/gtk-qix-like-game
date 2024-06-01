@@ -9,6 +9,7 @@ extern int width;
 extern int height;
 extern gboolean app_running;
 extern guint timeout_id;
+extern gboolean drawing_complete;
 
 extern double colors[COLOR_COUNT][3];
 

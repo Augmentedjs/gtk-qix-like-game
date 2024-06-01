@@ -2,6 +2,9 @@
 #define LINE_H
 
 #include <gtk/gtk.h>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define TRAIL_COUNT 5
 
