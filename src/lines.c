@@ -3,13 +3,6 @@
 #include <cairo.h>
 #include <stdio.h> // Include for debug prints
 
-Line player_lines[MAX_LINES];
-int player_line_count = 0;
-Point player_points[MAX_POINTS];
-int player_point_count = 0;
-Shape filled_shapes[MAX_SHAPES];
-int filled_shape_count = 0;
-
 void add_player_line(double x1, double y1, double x2, double y2) {
   if (player_line_count < MAX_LINES) {
     player_lines[player_line_count].x1 = x1;
@@ -38,9 +31,19 @@ void draw_player_lines(cairo_t *cr) {
 void add_filled_shape(Point *points, int point_count) {
   if (filled_shape_count < MAX_SHAPES) {
     filled_shapes[filled_shape_count].point_count = point_count;
+    int min_x = points[0].x, min_y = points[0].y;
+    int max_x = points[0].x, max_y = points[0].y;
     for (int i = 0; i < point_count; i++) {
       filled_shapes[filled_shape_count].points[i] = points[i];
+      if (points[i].x < min_x) min_x = points[i].x;
+      if (points[i].y < min_y) min_y = points[i].y;
+      if (points[i].x > max_x) max_x = points[i].x;
+      if (points[i].y > max_y) max_y = points[i].y;
     }
+    filled_shapes[filled_shape_count].min_x = min_x;
+    filled_shapes[filled_shape_count].min_y = min_y;
+    filled_shapes[filled_shape_count].max_x = max_x;
+    filled_shapes[filled_shape_count].max_y = max_y;
     filled_shape_count++;
   }
 }

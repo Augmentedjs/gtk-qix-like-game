@@ -4,10 +4,32 @@
 #include "includes/player.h"
 #include "includes/globals.h"
 
-double line_x1, line_y1, line_x2, line_y2;
-double dx1, dy1, dx2, dy2;
-int color_index = 0;
-double offset = 5.0;
+void update_bouncing_line_position() {
+  // Update line position
+  line_x += line_dx;
+  line_y += line_dy;
+
+  // Check for collisions with window edges
+  if (line_x <= 0 || line_x >= width) {
+      line_dx = -line_dx;
+  }
+  if (line_y <= 0 || line_y >= height) {
+      line_dy = -line_dy;
+  }
+
+  // Check for collisions with shape boundaries
+  for (int i = 0; i < filled_shape_count; i++) {
+    Shape *shape = &filled_shapes[i];
+    if (line_x >= shape->min_x && line_x <= shape->max_x && line_y >= shape->min_y && line_y <= shape->max_y) {
+      if (line_x <= shape->min_x || line_x >= shape->max_x) {
+        line_dx = -line_dx;
+      }
+      if (line_y <= shape->min_y || line_y >= shape->max_y) {
+        line_dy = -line_dy;
+      }
+    }
+  }
+}
 
 void initialize_positions_and_directions(int width, int height) {
   // Seed the random number generator
