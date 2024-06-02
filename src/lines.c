@@ -19,7 +19,7 @@ void add_player_line(double x1, double y1, double x2, double y2) {
 }
 
 void draw_player_lines(cairo_t *cr) {
-  cairo_set_source_rgb(cr, 0.0, 0.0, 0.5); // Blue color
+  cairo_set_source_rgb(cr, colors[8][0], colors[8][1], colors[8][2]); // VGA blue color
   cairo_set_line_width(cr, 2.0);
   for (int i = 0; i < player_line_count; i++) {
     cairo_move_to(cr, player_lines[i].x1, player_lines[i].y1);
@@ -125,7 +125,7 @@ void fill_shape(cairo_t *cr) {
   add_filled_shape(player_points, player_point_count);
 
   // Draw the shape
-  cairo_set_source_rgba(cr, 0.0, 0.0, 1.0, 0.5); // Semi-transparent blue color
+  cairo_set_source_rgba(cr, colors[8][0], colors[8][1], colors[8][2], 0.5); // Semi-transparent VGA blue color
   cairo_move_to(cr, player_points[0].x, player_points[0].y);
 
   for (int i = 1; i < player_point_count; i++) {
@@ -141,7 +141,7 @@ void fill_shape(cairo_t *cr) {
 
 void draw_filled_shapes(cairo_t *cr) {
   for (int i = 0; i < filled_shape_count; i++) {
-    cairo_set_source_rgba(cr, 0.0, 0.0, 1.0, 0.5); // Semi-transparent blue color
+    cairo_set_source_rgba(cr, colors[0][0], colors[0][1], colors[0][2], 0.5); // Semi-transparent VGA blue color
     cairo_move_to(cr, filled_shapes[i].points[0].x, filled_shapes[i].points[0].y);
 
     for (int j = 1; j < filled_shapes[i].point_count; j++) {

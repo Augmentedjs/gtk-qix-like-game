@@ -17,5 +17,5 @@ void add_point(double x, double y) {
   trails[trail_count].opacity = 1.0;
   trail_count++;
 
-  printf("Point added: (%.2f, %.2f)\n", x, y); // Debug print
+  //printf("Point added: (%.2f, %.2f)\n", x, y); // Debug print
 }

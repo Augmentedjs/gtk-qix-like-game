@@ -95,7 +95,7 @@ void update_positions_and_trails(int width, int height) {
 
   // Change color only if any point bounces off the boundary
   if (bounced1 || bounced2) {
-    color_index = (color_index + 1) % COLOR_COUNT;
+    color_index = (color_index + 1) % (COLOR_COUNT - 1); // skip 'black'
   }
 
   // Update trails
