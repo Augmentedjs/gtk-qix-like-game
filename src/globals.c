@@ -43,3 +43,5 @@ Point player_points[MAX_POINTS];
 double line_x1, line_y1, line_x2, line_y2;
 
 double offset = 5.0;
+
+int player_point_count = 0;

@@ -22,7 +22,6 @@ extern double line_x1, line_y1, line_x2, line_y2;
 extern int color_index;
 extern double offset;
 
-
 #define MAX_LINES 1000
 #define MAX_POINTS 2000
 #define MAX_SHAPES 100
@@ -49,5 +48,7 @@ extern int player_line_count;
 extern Point player_points[MAX_POINTS];
 extern int player_point_count;
 extern Shape filled_shapes[MAX_SHAPES];
+
+extern int player_point_count; 
 
 #endif
