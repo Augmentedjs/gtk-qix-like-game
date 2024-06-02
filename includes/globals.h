@@ -40,15 +40,16 @@ typedef struct {
   int min_x, min_y, max_x, max_y;
 } Shape;
 
-extern Shape filled_shapes[];
+extern Shape filled_shapes[MAX_SHAPES];
 extern int filled_shape_count;
 
 extern Line player_lines[MAX_LINES];
 extern int player_line_count;
 extern Point player_points[MAX_POINTS];
 extern int player_point_count;
-extern Shape filled_shapes[MAX_SHAPES];
 
-extern int player_point_count; 
+extern double player_colors[4][3];
 
-#endif
+void initialize_player_colors(void);
+
+#endif // GLOBALS_H

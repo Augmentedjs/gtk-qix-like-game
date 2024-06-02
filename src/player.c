@@ -5,12 +5,6 @@
 double player_x, player_y;
 double player_speed = 5.0;
 double last_player_x, last_player_y;
-static double player_colors[4][3] = {
-  {0.6, 0.6, 0.6}, // Light Gray
-  {0.5, 0.5, 0.5}, // Medium Gray
-  {0.4, 0.4, 0.4}, // Dark Gray
-  {0.3, 0.3, 0.3}  // Darker Gray
-};
 
 void draw_player(cairo_t *cr) {
   // Draw the player as a cloud of dots
