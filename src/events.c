@@ -1,10 +1,9 @@
 #include "includes/player.h"
 #include "includes/events.h"
 #include "includes/qix_monster.h"
-#include "includes/globals.h"
 #include "includes/trails.h"
-
-#include <stdio.h> // Include for debug prints
+#include "includes/globals.h"
+#include "includes/lines.h"
 
 gboolean on_timeout(gpointer user_data) {
   GtkWidget *drawing_area = GTK_WIDGET(user_data);
@@ -15,6 +14,7 @@ gboolean on_timeout(gpointer user_data) {
 
   // Update positions and trails
   update_positions_and_trails(width, height);
+  update_bouncing_line_position();
 
   // Queue redraw of the drawing area
   gtk_widget_queue_draw(drawing_area);
@@ -80,25 +80,21 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
 
   // Check if player reached the boundary
   if (player_x <= 1 || player_x >= width - 2 || player_y <= 1 || player_y >= height - 2) {
-    printf("Boundary reached: player_x = %.2f, player_y = %.2f\n", player_x, player_y); // Debug print
-
     if (player_y <= 1 || player_y >= height - 2) {
       // Complete shape vertically
       add_point(0, player_y);  // Adding the boundary point on the left
-      add_point(0, 0);  // Adding the boundary point at the top left corner
+      add_point(0, last_player_y);  // Adding the boundary point at the last known y position
     } else if (player_x <= 1 || player_x >= width - 2) {
       // Complete shape horizontally
       add_point(player_x, 0);  // Adding the boundary point on the top
-      add_point(0, 0);  // Adding the boundary point at the top left corner
+      add_point(last_player_x, 0);  // Adding the boundary point at the last known x position
     }
     drawing_complete = TRUE;
-    printf("Shape completed.\n"); // Debug print
   }
 
   if (!ctrl_pressed && was_ctrl_pressed) {
     // Control key was released, set drawing_complete flag
     drawing_complete = TRUE;
-    printf("Shape completed due to control release.\n"); // Debug print
   }
 
   was_ctrl_pressed = ctrl_pressed;

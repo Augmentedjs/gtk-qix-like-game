@@ -22,6 +22,9 @@ static void activate(GtkApplication *app, gpointer user_data) {
   // Initialize random positions and directions
   initialize_positions_and_directions(width, height);
 
+  // Initialize player colors
+  initialize_player_colors();
+
   // Create a new window
   window = gtk_application_window_new(app);
   gtk_window_set_title(GTK_WINDOW(window), "QIX Style Line Drawing with Trails");
