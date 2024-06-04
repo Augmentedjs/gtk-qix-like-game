@@ -3,7 +3,13 @@
 
 #include <gtk/gtk.h>
 
+#define MAX_LINES 1000
+#define MAX_POINTS 2000
+#define MAX_SHAPES 100
 #define COLOR_COUNT 16
+
+#define APPLICATION_NAME "com.augmentedjs.qixline"
+#define APPLICATION_TITLE "QIX Style Line Drawing with Trails"
 
 extern double colors[COLOR_COUNT][3];
 
@@ -21,10 +27,6 @@ extern double dx1, dy1, dx2, dy2;
 extern double line_x1, line_y1, line_x2, line_y2;
 extern int color_index;
 extern double offset;
-
-#define MAX_LINES 1000
-#define MAX_POINTS 2000
-#define MAX_SHAPES 100
 
 typedef struct {
   double x1, y1, x2, y2;

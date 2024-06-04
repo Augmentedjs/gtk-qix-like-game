@@ -1,12 +1,13 @@
 #include "includes/drawing.h"
-#include "includes/trails.h"
-#include "includes/qix_monster.h"
 #include "includes/player.h"
 #include "includes/lines.h"
+#include "includes/qix_monster.h"
 #include "includes/globals.h"
 #include <stdio.h> // Include for debug prints
 
-static void draw_background(cairo_t *cr, int width, int height) {
+// This is for drawing the screen and objects
+
+static void draw_background(cairo_t *cr, const int width, const int height) {
   // Set the background color to black
   cairo_set_source_rgb(cr, colors[15][0], colors[15][1], colors[15][2]);
   cairo_paint(cr);
@@ -14,11 +15,11 @@ static void draw_background(cairo_t *cr, int width, int height) {
   // Draw the white border using VGA white color
   cairo_set_source_rgb(cr, colors[14][0], colors[14][1], colors[14][2]);
   cairo_set_line_width(cr, 2.0);
-  cairo_rectangle(cr, 0, 0, width, height);
+  cairo_rectangle(cr, 0.0, 0.0, width, height);
   cairo_stroke(cr);
 }
 
-static void draw_text(cairo_t *cr, int width, int height) {
+static void draw_text(cairo_t *cr, const int width, const int height) {
   // Set the color for the text (dark gray)
   cairo_set_source_rgb(cr, colors[7][0], colors[7][1], colors[7][2]);
   cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
@@ -29,15 +30,15 @@ static void draw_text(cairo_t *cr, int width, int height) {
   cairo_text_extents(cr, "QIX", &extents);
 
   // Calculate the position to center the text
-  double x = (width - extents.width) / 2 - extents.x_bearing;
-  double y = (height - extents.height) / 2 - extents.y_bearing;
+  const double x = (width - extents.width) / 2 - extents.x_bearing;
+  const double y = (height - extents.height) / 2 - extents.y_bearing;
 
   // Move to the position and show the text
   cairo_move_to(cr, x, y);
   cairo_show_text(cr, "QIX");
 }
 
-void draw_line(cairo_t *cr, double x1, double y1, double x2, double y2, double opacity, double width, int color_index) {
+void draw_line(cairo_t *cr, const double x1, const double y1, const double x2, const double y2, const double opacity, const double width, const int color_index) {
   // Set the color for the line
   cairo_set_source_rgba(cr, colors[color_index][0], colors[color_index][1], colors[color_index][2], opacity);
   // Set the line width

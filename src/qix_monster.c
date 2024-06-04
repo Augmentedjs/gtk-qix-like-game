@@ -1,8 +1,26 @@
 #include "includes/qix_monster.h"
 #include "includes/drawing.h"
-#include "includes/trails.h"
 #include "includes/player.h"
 #include "includes/globals.h"
+#include <stdio.h>
+
+Trail trails[TRAIL_MAX];
+int trail_count = 0;
+
+void add_trail_point(const double x, const double y) {
+  if (trail_count >= TRAIL_MAX) {
+    // Handle max trail points
+    return;
+  }
+  trails[trail_count].x1 = (trail_count == 0) ? x : trails[trail_count - 1].x2;
+  trails[trail_count].y1 = (trail_count == 0) ? y : trails[trail_count - 1].y2;
+  trails[trail_count].x2 = x;
+  trails[trail_count].y2 = y;
+  trails[trail_count].opacity = 1.0;
+  trail_count++;
+
+  printf("Trail Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
+}
 
 void update_bouncing_line_position() {
   // Update line position
@@ -31,7 +49,7 @@ void update_bouncing_line_position() {
   }
 }
 
-void initialize_positions_and_directions(int width, int height) {
+void initialize_positions_and_directions(const int width, const int height) {
   // Seed the random number generator
   srand(time(NULL));
 
@@ -60,7 +78,7 @@ void initialize_positions_and_directions(int width, int height) {
   initialize_player_position(width, height);
 }
 
-void update_line_position(double *x, double *y, double *dx, double *dy, int width, int height, gboolean *bounced) {
+void update_line_position(double *x, double *y, double *dx, double *dy, const int width, const int height, gboolean *bounced) {
   *bounced = FALSE;
   *x += *dx;
   *y += *dy;
@@ -86,7 +104,7 @@ void update_line_position(double *x, double *y, double *dx, double *dy, int widt
   }
 }
 
-void update_positions_and_trails(int width, int height) {
+void update_positions_and_trails(const int width, const int height) {
   gboolean bounced1 = FALSE, bounced2 = FALSE;
 
   // Update line position for both points
@@ -99,7 +117,7 @@ void update_positions_and_trails(int width, int height) {
   }
 
   // Update trails
-  for (int i = TRAIL_COUNT - 1; i > 0; i--) {
+  for (size_t i = TRAIL_COUNT - 1; i > 0; i--) {
     trails[i] = trails[i - 1];
     trails[i].opacity -= 1.0 / TRAIL_COUNT; // Decrease opacity for fading effect
   }
@@ -112,7 +130,7 @@ void update_positions_and_trails(int width, int height) {
   trails[0].opacity = 1.0;
 
   // Apply offset to the remaining trails
-  for (int i = 1; i < TRAIL_COUNT; i++) {
+  for (size_t i = 1; i < TRAIL_COUNT; i++) {
     trails[i].x1 = trails[i - 1].x1 - offset * dx1 / sqrt(dx1 * dx1 + dy1 * dy1);
     trails[i].y1 = trails[i - 1].y1 - offset * dy1 / sqrt(dx1 * dx1 + dy1 * dy1);
     trails[i].x2 = trails[i - 1].x2 - offset * dx2 / sqrt(dx2 * dx2 + dy2 * dy2);

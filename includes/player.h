@@ -5,10 +5,12 @@
 #include <cairo.h>
 
 #define PLAYER_DOT_COUNT 20
+#define PLAYER_DEFAULT_SPEED 5.0
+#define PLAYER_SUPER_SPEED 8.0
 
 void draw_player(cairo_t *cr);
-void update_player_position(double x, double y);
-void initialize_player_position(int width, int height);
+void update_player_position(const double x, const double y);
+void initialize_player_position(const int width, const int height);
 
 extern double player_x, player_y;
 extern double player_speed;

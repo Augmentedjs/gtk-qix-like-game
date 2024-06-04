@@ -2,8 +2,8 @@
 #include "includes/drawing.h"
 #include "includes/player.h"
 #include "includes/qix_monster.h"
-#include "includes/trails.h"
 #include "includes/events.h"
+#include "includes/lines.h"
 #include "includes/globals.h"
 
 static void on_window_destroy(GtkWidget *widget, gpointer user_data) {
@@ -27,7 +27,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
   // Create a new window
   window = gtk_application_window_new(app);
-  gtk_window_set_title(GTK_WINDOW(window), "QIX Style Line Drawing with Trails");
+  gtk_window_set_title(GTK_WINDOW(window), APPLICATION_TITLE);
   gtk_window_set_default_size(GTK_WINDOW(window), width, height);
 
   // Disable window resizing
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
   int status;
 
   // Create a new GTK application
-  app = gtk_application_new("com.augmentedjs.qixline", G_APPLICATION_DEFAULT_FLAGS);
+  app = gtk_application_new(APPLICATION_NAME, G_APPLICATION_DEFAULT_FLAGS);
   g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
 
   // Run the application
