@@ -58,6 +58,7 @@ int filled_shape_count = 0;
 
 Line player_lines[MAX_LINES];
 int player_line_count = 0;
+
 Point player_points[MAX_POINTS];
 
 double line_x1, line_y1, line_x2, line_y2;

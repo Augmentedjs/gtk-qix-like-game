@@ -53,7 +53,7 @@ void add_filled_shape(Point *points, int point_count) {
 }
 
 void complete_shape_to_boundary() {
-  if (player_point_count < 3) {
+  if (player_point_count < 2) {
     return;
   }
 
@@ -118,6 +118,7 @@ void complete_shape_to_boundary() {
 
 void fill_shape(cairo_t *cr) {
   if (player_point_count < 3) {
+    printf("Fill shape too small - %d\n", player_point_count);
     return; // Not enough points to form a shape
   }
 

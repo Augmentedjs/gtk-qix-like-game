@@ -2,7 +2,6 @@
 #include "includes/drawing.h"
 #include "includes/player.h"
 #include "includes/qix_monster.h"
-#include "includes/trails.h"
 #include "includes/events.h"
 #include "includes/globals.h"
 

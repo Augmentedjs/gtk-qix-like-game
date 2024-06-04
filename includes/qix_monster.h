@@ -18,7 +18,6 @@ extern Trail trails[TRAIL_MAX];
 extern int trail_count;
 
 void add_trail_point(double x, double y);
-
 void initialize_positions_and_directions(int width, int height);
 void update_positions_and_trails(int width, int height);
 void update_line_position(double *x, double *y, double *dx, double *dy, int width, int height, gboolean *bounced);

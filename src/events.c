@@ -3,7 +3,6 @@
 #include "includes/lines.h"
 #include "includes/player.h"
 #include "includes/qix_monster.h"
-#include "includes/trails.h"
 
 gboolean on_timeout(gpointer user_data) {
   GtkWidget *drawing_area = GTK_WIDGET(user_data);
