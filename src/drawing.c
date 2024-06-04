@@ -15,11 +15,11 @@
 
 static void draw_background(cairo_t *cr, const int width, const int height) {
   // Set the background color to black
-  cairo_set_source_rgb(cr, colors[15][0], colors[15][1], colors[15][2]);
+  cairo_set_source_rgb(cr, colors[BLACK][0], colors[BLACK][1], colors[BLACK][2]);
   cairo_paint(cr);
 
   // Draw the white border using VGA white color
-  cairo_set_source_rgb(cr, colors[14][0], colors[14][1], colors[14][2]);
+  cairo_set_source_rgb(cr, colors[WHITE][0], colors[WHITE][1], colors[WHITE][2]);
   cairo_set_line_width(cr, 2.0);
   cairo_rectangle(cr, 0.0, 0.0, width, height);
   cairo_stroke(cr);
@@ -27,7 +27,7 @@ static void draw_background(cairo_t *cr, const int width, const int height) {
 
 static void draw_text(cairo_t *cr, const int width, const int height) {
   // Set the color for the text (dark gray)
-  cairo_set_source_rgb(cr, colors[7][0], colors[7][1], colors[7][2]);
+  cairo_set_source_rgb(cr, colors[DARK_GRAY][0], colors[DARK_GRAY][1], colors[DARK_GRAY][2]);
   cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
   cairo_set_font_size(cr, 48);
 

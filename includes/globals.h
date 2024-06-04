@@ -2,16 +2,13 @@
 #define GLOBALS_H
 
 #include <gtk/gtk.h>
+#include "colors.h"
 
 #define MAX_LINES 1000
 #define MAX_POINTS 2000
 #define MAX_SHAPES 100
-#define COLOR_COUNT 16
-
 #define APPLICATION_NAME "com.augmentedjs.qixline"
 #define APPLICATION_TITLE "QIX Style Line Drawing with Trails"
-
-extern double colors[COLOR_COUNT][3];
 
 extern int width;
 extern int height;
