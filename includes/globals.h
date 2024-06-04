@@ -47,8 +47,9 @@ extern unsigned int filled_shape_count;
 
 extern Line player_lines[MAX_LINES];
 extern unsigned int player_line_count;
-extern Point player_points[MAX_POINTS];
-extern unsigned int player_point_count;
+
+// extern Point player_points[MAX_POINTS];
+// extern unsigned int player_point_count;
 
 extern double player_colors[4][3];
 

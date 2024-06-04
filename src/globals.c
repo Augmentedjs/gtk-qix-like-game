@@ -59,13 +59,12 @@ unsigned filled_shape_count = 0;
 Line player_lines[MAX_LINES];
 unsigned player_line_count = 0;
 
-Point player_points[MAX_POINTS];
+// Point player_points[MAX_POINTS];
+// unsigned player_point_count = 0;
 
 double line_x1, line_y1, line_x2, line_y2;
 
 double offset = 5.0;
-
-unsigned player_point_count = 0;
 
 unsigned int shape_point_count = 0;
 Point shape_points[MAX_POINTS];
