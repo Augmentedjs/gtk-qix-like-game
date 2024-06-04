@@ -44,7 +44,7 @@ static void draw_text(cairo_t *cr, const int width, const int height) {
   cairo_show_text(cr, "QIX");
 }
 
-void draw_line(cairo_t *cr, const double x1, const double y1, const double x2, const double y2, const double opacity, const double width, const int color_index) {
+void draw_QIX_line(cairo_t *cr, const double x1, const double y1, const double x2, const double y2, const double opacity, const double width, const int color_index) {
   // Set the color for the line
   cairo_set_source_rgba(cr, colors[color_index][0], colors[color_index][1], colors[color_index][2], opacity);
   // Set the line width
@@ -89,11 +89,11 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
   // Draw the trails first
   for (size_t i = 0; i < TRAIL_COUNT; i++) {
     if (trails[i].opacity > 0) {
-      draw_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0, color_index);
+      draw_QIX_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0, qix_color_index);
     }
   }
   // Draw the current line
-  draw_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0, 2.0, color_index);
+  draw_QIX_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0, 2.0, qix_color_index);
 
   // Draw player-drawn lines
   draw_player_lines(cr);

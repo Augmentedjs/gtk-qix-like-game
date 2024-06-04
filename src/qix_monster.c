@@ -73,9 +73,6 @@ void initialize_positions_and_directions(const int width, const int height) {
     trails[i].y2 = line_y2;
     trails[i].opacity = 0.0;
   }
-
-  // Initialize player position on the bottom border
-  initialize_player_position(width, height);
 }
 
 void update_line_position(double *x, double *y, double *dx, double *dy, const int width, const int height, gboolean *bounced) {
@@ -113,7 +110,7 @@ void update_positions_and_trails(const int width, const int height) {
 
   // Change color only if any point bounces off the boundary
   if (bounced1 || bounced2) {
-    color_index = (color_index + 1) % (COLOR_COUNT - 1); // skip 'black'
+    qix_color_index = (qix_color_index + 1) % (COLOR_COUNT - 1) + 1; // skip 'black'
   }
 
   // Update trails

@@ -22,7 +22,7 @@ extern double last_dx, last_dy;
 extern double dx1, dy1, dx2, dy2;
 
 extern double line_x1, line_y1, line_x2, line_y2;
-extern unsigned int color_index;
+extern unsigned int qix_color_index;
 extern double offset;
 
 typedef struct {

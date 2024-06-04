@@ -60,6 +60,7 @@ void add_player_point(const double x, const double y) {
 }
 
 void complete_shape_to_boundary() {
+  printf("complete_shape_to_boundary Points: %d\n", shape_point_count); // Debug print
   if (shape_point_count < 2) {
     return;
   }
@@ -127,7 +128,7 @@ void complete_shape_to_boundary() {
 void fill_shape(cairo_t *cr) {
   if (shape_point_count < 3) {
     printf("Fill shape too small - %d\n", shape_point_count);
-    return; // Not enough points to form a shape
+    // return; // Not enough points to form a shape
   }
 
   // Complete the shape to the boundary

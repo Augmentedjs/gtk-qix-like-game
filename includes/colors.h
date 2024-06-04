@@ -5,23 +5,24 @@
 
 extern double colors[COLOR_COUNT][3];
 
+// Matches CGA / EGA / VGA 16 Color Text
 enum ColorIndex {
-  BLUE,
-  GREEN,
-  CYAN,
-  RED,
-  MAGENTA,
-  BROWN,
-  LIGHT_GRAY,
-  DARK_GRAY,
-  LIGHT_BLUE,
-  LIGHT_GREEN,
-  LIGHT_CYAN,
-  LIGHT_RED,
-  LIGHT_MAGENTA,
-  YELLOW,
-  WHITE,
-  BLACK
+  BLACK,        // 0
+  BLUE,         // 1
+  GREEN,        // 2
+  CYAN,         // 3
+  RED,          // 4
+  MAGENTA,      // 5
+  BROWN,        // 6
+  LIGHT_GRAY,   // 7
+  DARK_GRAY,    // 8
+  LIGHT_BLUE,   // 9
+  LIGHT_GREEN,  // 10
+  LIGHT_CYAN,   // 11
+  LIGHT_RED,    // 12
+  LIGHT_MAGENTA,// 13
+  YELLOW,       // 14
+  WHITE         // 15
 };
 
 #endif
