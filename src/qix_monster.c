@@ -2,6 +2,7 @@
 #include "includes/drawing.h"
 #include "includes/player.h"
 #include "includes/globals.h"
+#include <stdio.h>
 
 Trail trails[TRAIL_MAX];
 int trail_count = 0;
@@ -18,7 +19,7 @@ void add_trail_point(double x, double y) {
   trails[trail_count].opacity = 1.0;
   trail_count++;
 
-  //printf("Point added: (%.2f, %.2f)\n", x, y); // Debug print
+  printf("Trail Point added: (%.2f, %.2f)\n", x, y); // Debug print
 }
 
 void update_bouncing_line_position() {

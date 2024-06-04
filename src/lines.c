@@ -52,6 +52,11 @@ void add_filled_shape(Point *points, int point_count) {
   }
 }
 
+void add_player_point(double x, double y) {
+  player_points[player_point_count++] = (Point){x, y};
+  printf("Player Point added: (%.2f, %.2f)\n", x, y); // Debug print
+}
+
 void complete_shape_to_boundary() {
   if (player_point_count < 2) {
     return;
@@ -114,6 +119,7 @@ void complete_shape_to_boundary() {
   if (player_points[player_point_count - 1].x != first_point.x || player_points[player_point_count - 1].y != first_point.y) {
     player_points[player_point_count++] = first_point;
   }
+  printf("Completed shape to boundary - (%d, %d)\n", last_point.x, last_point.y);
 }
 
 void fill_shape(cairo_t *cr) {
@@ -127,6 +133,7 @@ void fill_shape(cairo_t *cr) {
 
   // Ensure the shape has at least 4 sides
   if (player_point_count < 4) {
+    printf("Still fill shape too small - %d\n", player_point_count);
     return;
   }
 
@@ -146,6 +153,7 @@ void fill_shape(cairo_t *cr) {
 
   // Reset the points after filling
   player_point_count = 0;
+  printf("Player Points reset\n");
 }
 
 void draw_filled_shapes(cairo_t *cr) {

@@ -79,22 +79,22 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
     last_player_y = new_y;
   }
 
-  if (dx != last_dx || dy != last_dy) {
-    add_trail_point(player_x, player_y); // Save point on direction change
+  if ((dx != last_dx || dy != last_dy) && ctrl_pressed) {
+    add_player_point(player_x, player_y); // Save point on direction change
     last_dx = dx;
     last_dy = dy;
   }
 
   // Check if player reached the boundary
-  if (player_x <= 1 || player_x >= width - 2 || player_y <= 1 || player_y >= height - 2) {
-    if (player_y <= 1 || player_y >= height - 2) {
+  if (player_x == 0 || player_x == width || player_y == 0 || player_y == height) {
+    if ((player_y == 0 || player_y == height) && drawing_complete == FALSE && ctrl_pressed) {
       // Complete shape vertically
-      add_trail_point(0, player_y);      // Adding the boundary point on the left
-      add_trail_point(0, last_player_y); // Adding the boundary point at the last known y position
-    } else if (player_x <= 1 || player_x >= width - 2) {
+      add_player_point(0.0, player_y);      // Adding the boundary point on the left
+      add_player_point(0.0, last_player_y); // Adding the boundary point at the last known y position
+    } else if ((player_x == 0 || player_x == width) && drawing_complete == FALSE && ctrl_pressed) {
       // Complete shape horizontally
-      add_trail_point(player_x, 0);      // Adding the boundary point on the top
-      add_trail_point(last_player_x, 0); // Adding the boundary point at the last known x position
+      add_player_point(player_x, 0.0);      // Adding the boundary point on the top
+      add_player_point(last_player_x, 0.0); // Adding the boundary point at the last known x position
     }
     drawing_complete = TRUE;
   }
