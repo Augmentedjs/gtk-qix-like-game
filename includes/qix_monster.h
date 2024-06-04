@@ -15,7 +15,7 @@ typedef struct {
 } Trail;
 
 extern Trail trails[TRAIL_MAX];
-extern int trail_count;
+extern unsigned int trail_count;
 
 void add_trail_point(const double x, const double y);
 void initialize_positions_and_directions(const int width, const int height);

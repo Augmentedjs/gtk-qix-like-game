@@ -2,16 +2,13 @@
 #define GLOBALS_H
 
 #include <gtk/gtk.h>
+#include "colors.h"
 
 #define MAX_LINES 1000
 #define MAX_POINTS 2000
 #define MAX_SHAPES 100
-#define COLOR_COUNT 16
-
 #define APPLICATION_NAME "com.augmentedjs.qixline"
 #define APPLICATION_TITLE "QIX Style Line Drawing with Trails"
-
-extern double colors[COLOR_COUNT][3];
 
 extern int width;
 extern int height;
@@ -25,7 +22,7 @@ extern double last_dx, last_dy;
 extern double dx1, dy1, dx2, dy2;
 
 extern double line_x1, line_y1, line_x2, line_y2;
-extern int color_index;
+extern unsigned int qix_color_index;
 extern double offset;
 
 typedef struct {
@@ -38,19 +35,23 @@ typedef struct {
 
 typedef struct {
   Point points[MAX_POINTS];
-  int point_count;
+  unsigned int point_count;
   int min_x, min_y, max_x, max_y;
 } Shape;
 
 extern Shape filled_shapes[MAX_SHAPES];
-extern int filled_shape_count;
+extern unsigned int filled_shape_count;
 
 extern Line player_lines[MAX_LINES];
-extern int player_line_count;
-extern Point player_points[MAX_POINTS];
-extern int player_point_count;
+extern unsigned int player_line_count;
+
+// extern Point player_points[MAX_POINTS];
+// extern unsigned int player_point_count;
 
 extern double player_colors[4][3];
+
+extern unsigned int shape_point_count;
+extern Point shape_points[MAX_POINTS];
 
 void initialize_player_colors(void);
 

@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 Trail trails[TRAIL_MAX];
-int trail_count = 0;
+unsigned int trail_count = 0;
 
 void add_trail_point(const double x, const double y) {
   if (trail_count >= TRAIL_MAX) {
@@ -36,7 +36,7 @@ void update_bouncing_line_position() {
   }
 
   // Check for collisions with shape boundaries
-  for (int i = 0; i < filled_shape_count; i++) {
+  for (size_t i = 0; i < filled_shape_count; i++) {
     Shape *shape = &filled_shapes[i];
     if (line_x >= shape->min_x && line_x <= shape->max_x && line_y >= shape->min_y && line_y <= shape->max_y) {
       if (line_x <= shape->min_x || line_x >= shape->max_x) {
@@ -66,16 +66,13 @@ void initialize_positions_and_directions(const int width, const int height) {
   dy2 = (rand() % 3 + 1) * (rand() % 2 ? 1 : -1);
 
   // Initialize trails
-  for (int i = 0; i < TRAIL_COUNT; i++) {
+  for (size_t i = 0; i < TRAIL_COUNT; i++) {
     trails[i].x1 = line_x1;
     trails[i].y1 = line_y1;
     trails[i].x2 = line_x2;
     trails[i].y2 = line_y2;
     trails[i].opacity = 0.0;
   }
-
-  // Initialize player position on the bottom border
-  initialize_player_position(width, height);
 }
 
 void update_line_position(double *x, double *y, double *dx, double *dy, const int width, const int height, gboolean *bounced) {
@@ -113,7 +110,7 @@ void update_positions_and_trails(const int width, const int height) {
 
   // Change color only if any point bounces off the boundary
   if (bounced1 || bounced2) {
-    color_index = (color_index + 1) % (COLOR_COUNT - 1); // skip 'black'
+    qix_color_index = (qix_color_index + 1) % (COLOR_COUNT - 1) + 1; // skip 'black'
   }
 
   // Update trails

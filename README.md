@@ -9,6 +9,7 @@ More to follow as game is completed.
 ## Dependencies
 
 ### Linux
+
 These are the requirements for Linux but also tested configurations
 
 - **Operating System:**

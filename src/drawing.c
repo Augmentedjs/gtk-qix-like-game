@@ -7,13 +7,19 @@
 
 // This is for drawing the screen and objects
 
+// void drawDot(cairo_t *cr, const int x, const int y) {
+//   cairo_set_source_rgb(cr, colors[1][0], colors[1][1], colors[1][2]);
+//   cairo_arc(cr, x, y, 2, 0, 2 * M_PI);
+//   cairo_fill(cr);
+// }
+
 static void draw_background(cairo_t *cr, const int width, const int height) {
   // Set the background color to black
-  cairo_set_source_rgb(cr, colors[15][0], colors[15][1], colors[15][2]);
+  cairo_set_source_rgb(cr, colors[BLACK][0], colors[BLACK][1], colors[BLACK][2]);
   cairo_paint(cr);
 
   // Draw the white border using VGA white color
-  cairo_set_source_rgb(cr, colors[14][0], colors[14][1], colors[14][2]);
+  cairo_set_source_rgb(cr, colors[WHITE][0], colors[WHITE][1], colors[WHITE][2]);
   cairo_set_line_width(cr, 2.0);
   cairo_rectangle(cr, 0.0, 0.0, width, height);
   cairo_stroke(cr);
@@ -21,7 +27,7 @@ static void draw_background(cairo_t *cr, const int width, const int height) {
 
 static void draw_text(cairo_t *cr, const int width, const int height) {
   // Set the color for the text (dark gray)
-  cairo_set_source_rgb(cr, colors[7][0], colors[7][1], colors[7][2]);
+  cairo_set_source_rgb(cr, colors[DARK_GRAY][0], colors[DARK_GRAY][1], colors[DARK_GRAY][2]);
   cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
   cairo_set_font_size(cr, 48);
 
@@ -38,7 +44,7 @@ static void draw_text(cairo_t *cr, const int width, const int height) {
   cairo_show_text(cr, "QIX");
 }
 
-void draw_line(cairo_t *cr, const double x1, const double y1, const double x2, const double y2, const double opacity, const double width, const int color_index) {
+void draw_QIX_line(cairo_t *cr, const double x1, const double y1, const double x2, const double y2, const double opacity, const double width, const int color_index) {
   // Set the color for the line
   cairo_set_source_rgba(cr, colors[color_index][0], colors[color_index][1], colors[color_index][2], opacity);
   // Set the line width
@@ -52,6 +58,17 @@ void draw_line(cairo_t *cr, const double x1, const double y1, const double x2, c
   // Stroke the line to actually draw it
   cairo_stroke(cr);
 }
+
+// void draw_points(cairo_t *cr) {
+//   if (shape_point_count > 0) {
+//     printf("Draw points %d\n", shape_point_count);
+//     for (size_t i = 0; i < shape_point_count; i++) {
+//       drawDot(cr, shape_points->x, shape_points->y);
+//       printf("X: %d Y:%d   \n", shape_points->x, shape_points->y);
+//     }
+//     printf("\n");
+//   }
+// }
 
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
   // Draw the background and the white border
@@ -70,17 +87,19 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
   draw_filled_shapes(cr);
 
   // Draw the trails first
-  for (int i = 0; i < TRAIL_COUNT; i++) {
+  for (size_t i = 0; i < TRAIL_COUNT; i++) {
     if (trails[i].opacity > 0) {
-      draw_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0, color_index);
+      draw_QIX_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0, qix_color_index);
     }
   }
   // Draw the current line
-  draw_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0, 2.0, color_index);
+  draw_QIX_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0, 2.0, qix_color_index);
 
   // Draw player-drawn lines
   draw_player_lines(cr);
 
   // Draw the player
   draw_player(cr);
+
+  // draw_points(cr);
 }

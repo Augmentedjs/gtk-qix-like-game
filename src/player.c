@@ -13,10 +13,10 @@ void draw_player(cairo_t *cr) {
     const double radius = 5 + 3 * (i % 4);
     const double dot_x = player_x + radius * cos(angle);
     const double dot_y = player_y + radius * sin(angle);
-    const int color_index = i % 4;
+    const int index = i % 4;
 
     // Set the color for the dot
-    cairo_set_source_rgb(cr, player_colors[color_index][0], player_colors[color_index][1], player_colors[color_index][2]);
+    cairo_set_source_rgb(cr, player_colors[index][0], player_colors[index][1], player_colors[index][2]);
     cairo_arc(cr, dot_x, dot_y, 2, 0, 2 * M_PI);
     cairo_fill(cr);
   }

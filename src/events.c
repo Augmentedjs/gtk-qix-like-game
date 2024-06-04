@@ -30,6 +30,10 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
   double new_y = player_y;
   int dx = 0, dy = 0;
 
+  // save original point for possible storage
+  const double original_player_x = player_x;
+  const double original_player_y = player_y;
+
   switch (keyval) {
   case GDK_KEY_Left:
     if (player_y == 1 || player_y == height - 2 || ctrl_pressed) {
@@ -80,7 +84,8 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
   }
 
   if ((dx != last_dx || dy != last_dy) && ctrl_pressed) {
-    add_player_point(player_x, player_y); // Save point on direction change
+    // Save point on direction change
+    add_player_point(original_player_x, original_player_y); // (player_x, player_y);
     last_dx = dx;
     last_dy = dy;
   }

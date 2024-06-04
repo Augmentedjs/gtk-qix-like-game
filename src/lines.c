@@ -11,15 +11,17 @@ void add_player_line(const double x1, const double y1, const double x2, const do
     player_lines[player_line_count].y2 = y2;
     player_line_count++;
   }
+  /*  This is adding a lot of points for some reason.
   if (player_point_count < MAX_POINTS) {
     player_points[player_point_count].x = x1;
     player_points[player_point_count].y = y1;
     player_point_count++;
   }
+  */
 }
 
 void draw_player_lines(cairo_t *cr) {
-  cairo_set_source_rgb(cr, colors[8][0], colors[8][1], colors[8][2]); // VGA blue color
+  cairo_set_source_rgb(cr, colors[LIGHT_BLUE][0], colors[LIGHT_BLUE][1], colors[LIGHT_BLUE][2]); // VGA blue color
   cairo_set_line_width(cr, 2.0);
   for (size_t i = 0; i < player_line_count; i++) {
     cairo_move_to(cr, player_lines[i].x1, player_lines[i].y1);
@@ -28,7 +30,7 @@ void draw_player_lines(cairo_t *cr) {
   }
 }
 
-void add_filled_shape(const Point *points, const int point_count) {
+void add_filled_shape(const Point *points, const unsigned int point_count) {
   if (filled_shape_count < MAX_SHAPES) {
     filled_shapes[filled_shape_count].point_count = point_count;
     int min_x = points[0].x, min_y = points[0].y;
@@ -53,17 +55,18 @@ void add_filled_shape(const Point *points, const int point_count) {
 }
 
 void add_player_point(const double x, const double y) {
-  player_points[player_point_count++] = (Point){x, y};
-  printf("Player Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
+  shape_points[shape_point_count++] = (Point){x, y};
+  printf("Shape Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
 }
 
 void complete_shape_to_boundary() {
-  if (player_point_count < 2) {
+  printf("complete_shape_to_boundary Points: %d\n", shape_point_count); // Debug print
+  if (shape_point_count < 2) {
     return;
   }
 
-  Point last_point = player_points[player_point_count - 1];
-  Point first_point = player_points[0];
+  Point last_point = shape_points[shape_point_count - 1];
+  Point first_point = shape_points[0];
 
   // Adjust the last point to ensure it aligns with the boundaries correctly
   if (last_point.x <= 0)
@@ -79,86 +82,90 @@ void complete_shape_to_boundary() {
   if (last_point.x == 0 || last_point.x == width || last_point.y == 0 || last_point.y == height) {
     if (last_point.x == 0) {
       if (last_point.y != 0) {
-        player_points[player_point_count++] = (Point){0, 0};
+        shape_points[shape_point_count++] = (Point){0, 0};
       }
       if (first_point.y != 0) {
-        player_points[player_point_count++] = (Point){first_point.x, 0};
+        shape_points[shape_point_count++] = (Point){first_point.x, 0};
       }
     } else if (last_point.x == width) {
       if (last_point.y != height) {
-        player_points[player_point_count++] = (Point){width, height};
+        shape_points[shape_point_count++] = (Point){width, height};
       }
       if (first_point.y != height) {
-        player_points[player_point_count++] = (Point){first_point.x, height};
+        shape_points[shape_point_count++] = (Point){first_point.x, height};
       }
     } else if (last_point.y == 0) {
       if (last_point.x != width) {
-        player_points[player_point_count++] = (Point){width, 0};
+        shape_points[shape_point_count++] = (Point){width, 0};
       }
       if (first_point.x != width) {
-        player_points[player_point_count++] = (Point){width, first_point.y};
+        shape_points[shape_point_count++] = (Point){width, first_point.y};
       }
     } else if (last_point.y == height) {
       if (last_point.x != 0) {
-        player_points[player_point_count++] = (Point){0, height};
+        shape_points[shape_point_count++] = (Point){0, height};
       }
       if (first_point.x != 0) {
-        player_points[player_point_count++] = (Point){0, first_point.y};
+        shape_points[shape_point_count++] = (Point){0, first_point.y};
       }
     }
   } else {
     // Add points to form right angles and close the shape
     if (last_point.x != first_point.x) {
-      player_points[player_point_count++] = (Point){last_point.x, first_point.y};
+      shape_points[shape_point_count++] = (Point){last_point.x, first_point.y};
     } else if (last_point.y != first_point.y) {
-      player_points[player_point_count++] = (Point){first_point.x, last_point.y};
+      shape_points[shape_point_count++] = (Point){first_point.x, last_point.y};
     }
   }
 
   // Ensure the last point closes the shape correctly
-  if (player_points[player_point_count - 1].x != first_point.x || player_points[player_point_count - 1].y != first_point.y) {
-    player_points[player_point_count++] = first_point;
+  if (shape_points[shape_point_count - 1].x != first_point.x || shape_points[shape_point_count - 1].y != first_point.y) {
+    shape_points[shape_point_count++] = first_point;
   }
   printf("Completed shape to boundary - (%d, %d)\n", last_point.x, last_point.y);
 }
 
 void fill_shape(cairo_t *cr) {
-  if (player_point_count < 3) {
-    printf("Fill shape too small - %d\n", player_point_count);
-    return; // Not enough points to form a shape
+  if (shape_point_count < 3) {
+    printf("Fill shape too small - %d\n", shape_point_count);
+    // return; // Not enough points to form a shape
   }
 
   // Complete the shape to the boundary
   complete_shape_to_boundary();
 
   // Ensure the shape has at least 4 sides
-  if (player_point_count < 4) {
-    printf("Still fill shape too small - %d\n", player_point_count);
+  if (shape_point_count < 4) {
+    printf("Still fill shape too small - %d\n", shape_point_count);
     return;
   }
 
+  printf("Point Count - %d\n", shape_point_count);
+
   // Store the filled shape before drawing it
-  add_filled_shape(player_points, player_point_count);
+  add_filled_shape(shape_points, shape_point_count);
 
   // Draw the shape
-  cairo_set_source_rgba(cr, colors[8][0], colors[8][1], colors[8][2], 0.5); // Semi-transparent VGA blue color
-  cairo_move_to(cr, player_points[0].x, player_points[0].y);
+  cairo_set_source_rgba(cr, colors[LIGHT_BLUE][0], colors[LIGHT_BLUE][1], colors[LIGHT_BLUE][2], 0.5); // Semi-transparent VGA blue color
+  cairo_move_to(cr, shape_points[0].x, shape_points[0].y);
 
-  for (size_t i = 1; i < player_point_count; i++) {
-    cairo_line_to(cr, player_points[i].x, player_points[i].y);
+  for (size_t i = 1; i < shape_point_count; i++) {
+    cairo_line_to(cr, shape_points[i].x, shape_points[i].y);
   }
 
   cairo_close_path(cr);
   cairo_fill(cr);
 
   // Reset the points after filling
-  player_point_count = 0;
-  printf("Player Points reset\n");
+  // player_point_count = 0;
+  shape_point_count = 0;
+
+  printf("Shape Points reset\n");
 }
 
 void draw_filled_shapes(cairo_t *cr) {
   for (size_t i = 0; i < filled_shape_count; i++) {
-    cairo_set_source_rgba(cr, colors[0][0], colors[0][1], colors[0][2], 0.5); // Semi-transparent VGA blue color
+    cairo_set_source_rgba(cr, colors[BLUE][0], colors[BLUE][1], colors[BLUE][2], 0.5); // Semi-transparent VGA blue color
     cairo_move_to(cr, filled_shapes[i].points[0].x, filled_shapes[i].points[0].y);
 
     for (size_t j = 1; j < filled_shapes[i].point_count; j++) {
