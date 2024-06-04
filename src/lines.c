@@ -35,10 +35,14 @@ void add_filled_shape(Point *points, int point_count) {
     int max_x = points[0].x, max_y = points[0].y;
     for (int i = 0; i < point_count; i++) {
       filled_shapes[filled_shape_count].points[i] = points[i];
-      if (points[i].x < min_x) min_x = points[i].x;
-      if (points[i].y < min_y) min_y = points[i].y;
-      if (points[i].x > max_x) max_x = points[i].x;
-      if (points[i].y > max_y) max_y = points[i].y;
+      if (points[i].x < min_x)
+        min_x = points[i].x;
+      if (points[i].y < min_y)
+        min_y = points[i].y;
+      if (points[i].x > max_x)
+        max_x = points[i].x;
+      if (points[i].y > max_y)
+        max_y = points[i].y;
     }
     filled_shapes[filled_shape_count].min_x = min_x;
     filled_shapes[filled_shape_count].min_y = min_y;
@@ -57,10 +61,14 @@ void complete_shape_to_boundary() {
   Point first_point = player_points[0];
 
   // Adjust the last point to ensure it aligns with the boundaries correctly
-  if (last_point.x <= 0) last_point.x = 0;
-  if (last_point.x >= width) last_point.x = width;
-  if (last_point.y <= 0) last_point.y = 0;
-  if (last_point.y >= height) last_point.y = height;
+  if (last_point.x <= 0)
+    last_point.x = 0;
+  if (last_point.x >= width)
+    last_point.x = width;
+  if (last_point.y <= 0)
+    last_point.y = 0;
+  if (last_point.y >= height)
+    last_point.y = height;
 
   // If the last point is already at the boundary, add points to close the shape
   if (last_point.x == 0 || last_point.x == width || last_point.y == 0 || last_point.y == height) {

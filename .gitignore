@@ -33,7 +33,7 @@
 .vscode
 
 # Ignore build artifacts
-*.o
+obj
 *.lo
 *.la
 *.al
