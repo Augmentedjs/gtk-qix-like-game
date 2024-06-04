@@ -42,7 +42,7 @@ void initialize_player_colors() {
   player_colors[3][2] = colors[7][2];
 }
 
-int color_index = 0;
+unsigned color_index = 0;
 
 gboolean app_running = TRUE;
 guint timeout_id = 0;
@@ -54,10 +54,10 @@ double last_dx = 0, last_dy = 0;
 double dx1, dy1, dx2, dy2;
 
 Shape filled_shapes[MAX_SHAPES];
-int filled_shape_count = 0;
+unsigned filled_shape_count = 0;
 
 Line player_lines[MAX_LINES];
-int player_line_count = 0;
+unsigned player_line_count = 0;
 
 Point player_points[MAX_POINTS];
 
@@ -65,4 +65,7 @@ double line_x1, line_y1, line_x2, line_y2;
 
 double offset = 5.0;
 
-int player_point_count = 0;
+unsigned player_point_count = 0;
+
+unsigned int shape_point_count = 0;
+Point shape_points[MAX_POINTS];

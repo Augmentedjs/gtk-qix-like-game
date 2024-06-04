@@ -28,7 +28,7 @@ void draw_player_lines(cairo_t *cr) {
   }
 }
 
-void add_filled_shape(const Point *points, const int point_count) {
+void add_filled_shape(const Point *points, const unsigned int point_count) {
   if (filled_shape_count < MAX_SHAPES) {
     filled_shapes[filled_shape_count].point_count = point_count;
     int min_x = points[0].x, min_y = points[0].y;
@@ -53,8 +53,8 @@ void add_filled_shape(const Point *points, const int point_count) {
 }
 
 void add_player_point(const double x, const double y) {
-  player_points[player_point_count++] = (Point){x, y};
-  printf("Player Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
+  shape_points[shape_point_count++] = (Point){x, y};
+  printf("Shape Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
 }
 
 void complete_shape_to_boundary() {
@@ -137,6 +137,9 @@ void fill_shape(cairo_t *cr) {
     return;
   }
 
+
+  printf("Point Count - %d\n", player_point_count);
+
   // Store the filled shape before drawing it
   add_filled_shape(player_points, player_point_count);
 
@@ -153,7 +156,9 @@ void fill_shape(cairo_t *cr) {
 
   // Reset the points after filling
   player_point_count = 0;
-  printf("Player Points reset\n");
+  shape_point_count = 0;
+
+  printf("Player/Shape Points reset\n");
 }
 
 void draw_filled_shapes(cairo_t *cr) {

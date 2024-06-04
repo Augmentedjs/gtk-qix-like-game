@@ -58,14 +58,13 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
 int main(int argc, char **argv) {
   GtkApplication *app;
-  int status;
 
   // Create a new GTK application
   app = gtk_application_new(APPLICATION_NAME, G_APPLICATION_DEFAULT_FLAGS);
   g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
 
   // Run the application
-  status = g_application_run(G_APPLICATION(app), argc, argv);
+  const int status = g_application_run(G_APPLICATION(app), argc, argv);
 
   // Clean up
   g_object_unref(app);

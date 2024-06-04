@@ -7,6 +7,12 @@
 
 // This is for drawing the screen and objects
 
+void drawDot(cairo_t *cr, const int x, const int y) {
+  cairo_set_source_rgb(cr, colors[1][0], colors[1][1], colors[1][2]);
+  cairo_arc(cr, x, y, 2, 0, 2 * M_PI);
+  cairo_fill(cr);
+}
+
 static void draw_background(cairo_t *cr, const int width, const int height) {
   // Set the background color to black
   cairo_set_source_rgb(cr, colors[15][0], colors[15][1], colors[15][2]);
@@ -53,6 +59,17 @@ void draw_line(cairo_t *cr, const double x1, const double y1, const double x2, c
   cairo_stroke(cr);
 }
 
+void draw_points(cairo_t *cr) {
+  if (shape_point_count > 0) {
+    printf("Draw points %d\n", shape_point_count);
+    for (size_t i = 0; i < shape_point_count; i++) {
+      drawDot(cr, shape_points->x, shape_points->y);
+      printf("X: %d Y:%d   \n", shape_points->x, shape_points->y);
+    }
+    printf("\n");
+  }
+}
+
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
   // Draw the background and the white border
   draw_background(cr, width, height);
@@ -70,7 +87,7 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
   draw_filled_shapes(cr);
 
   // Draw the trails first
-  for (int i = 0; i < TRAIL_COUNT; i++) {
+  for (size_t i = 0; i < TRAIL_COUNT; i++) {
     if (trails[i].opacity > 0) {
       draw_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0, color_index);
     }
@@ -83,4 +100,6 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
 
   // Draw the player
   draw_player(cr);
+
+  draw_points(cr);
 }
