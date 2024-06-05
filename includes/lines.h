@@ -10,5 +10,5 @@ void draw_player_lines(cairo_t *cr);
 void fill_shape(cairo_t *cr);
 void add_filled_shape(const Point *points, const unsigned int point_count);
 void draw_filled_shapes(cairo_t *cr);
-
+double clamp(double value, double min, double max);
 #endif

@@ -61,67 +61,57 @@ void complete_shape_to_boundary() {
   Point first_point = shape_points[0];
 
   // Adjust the last point to ensure it aligns with the boundaries correctly
-  if (last_point.x <= 0)
-    last_point.x = 0;
-  if (last_point.x >= width)
-    last_point.x = width;
-  if (last_point.y <= 0)
-    last_point.y = 0;
-  if (last_point.y >= height)
-    last_point.y = height;
+  if (last_point.x < 0) last_point.x = 0;
+  if (last_point.x > width) last_point.x = width;
+  if (last_point.y < 0) last_point.y = 0;
+  if (last_point.y > height) last_point.y = height;
 
-  // If the last point is already at the boundary, add points to close the shape
-  if (last_point.x == 0 || last_point.x == width || last_point.y == 0 || last_point.y == height) {
-    if (last_point.x == 0) {
-      if (last_point.y != 0) {
-        shape_points[shape_point_count++] = (Point){0, 0};
-      }
-      if (first_point.y != 0) {
-        shape_points[shape_point_count++] = (Point){first_point.x, 0};
-      }
-    } else if (last_point.x == width) {
-      if (last_point.y != height) {
-        shape_points[shape_point_count++] = (Point){width, height};
-      }
-      if (first_point.y != height) {
-        shape_points[shape_point_count++] = (Point){first_point.x, height};
-      }
-    } else if (last_point.y == 0) {
-      if (last_point.x != width) {
-        shape_points[shape_point_count++] = (Point){width, 0};
-      }
-      if (first_point.x != width) {
-        shape_points[shape_point_count++] = (Point){width, first_point.y};
-      }
-    } else if (last_point.y == height) {
-      if (last_point.x != 0) {
-        shape_points[shape_point_count++] = (Point){0, height};
-      }
-      if (first_point.x != 0) {
-        shape_points[shape_point_count++] = (Point){0, first_point.y};
-      }
+  // Move last point to the nearest boundary if it's not on one
+  if (last_point.x != 0 && last_point.x != width && last_point.y != 0 && last_point.y != height) {
+    if (last_point.x < width / 2) {
+      shape_points[shape_point_count++] = (Point){0, last_point.y};
+      last_point.x = 0;
+    } else {
+      shape_points[shape_point_count++] = (Point){width, last_point.y};
+      last_point.x = width;
     }
-  } else {
-    // Add points to form right angles and close the shape
-    if (last_point.x != first_point.x) {
+  }
+
+  // Add intermediate points to ensure right angles
+  if (last_point.x == 0 || last_point.x == width) {
+    if (last_point.y != first_point.y) {
       shape_points[shape_point_count++] = (Point){last_point.x, first_point.y};
-    } else if (last_point.y != first_point.y) {
+    }
+  } else if (last_point.y == 0 || last_point.y == height) {
+    if (last_point.x != first_point.x) {
       shape_points[shape_point_count++] = (Point){first_point.x, last_point.y};
     }
   }
 
-  // Ensure the last point closes the shape correctly
+  // Ensure the shape is closed by adding the first point
   if (shape_points[shape_point_count - 1].x != first_point.x || shape_points[shape_point_count - 1].y != first_point.y) {
     shape_points[shape_point_count++] = first_point;
   }
-  printf("Completed shape to boundary - (%.0f, %.0f)\n", last_point.x, last_point.y);
+
+  printf("Completed shape to boundary - (%0.f, %0.f)\n", last_point.x, last_point.y);
 }
 
+double clamp(double value, double min, double max) {
+  return value < min ? min : (value > max ? max : value);
+}
+
+
 void fill_shape(cairo_t *cr) {
+  if (shape_point_count < 2) {
+    return;
+  }
+  printf("Fill shape - %d\n", shape_point_count);
   if (shape_point_count < 3) {
     printf("Fill shape too small - %d\n", shape_point_count);
     // return; // Not enough points to form a shape
   }
+
+
 
   // Complete the shape to the boundary
   complete_shape_to_boundary();
