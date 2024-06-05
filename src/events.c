@@ -23,8 +23,8 @@ gboolean on_timeout(gpointer user_data) {
 }
 
 gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data) {
-  gboolean ctrl_pressed = state & GDK_CONTROL_MASK;
-  static gboolean was_ctrl_pressed = FALSE;
+  gboolean shift_pressed = state & GDK_SHIFT_MASK;
+  static gboolean was_shift_pressed = FALSE;
 
   double new_x = player_x;
   double new_y = player_y;
@@ -35,47 +35,56 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
   const double original_player_y = player_y;
 
   switch (keyval) {
-  case GDK_KEY_Left:
-    if (player_y == 1 || player_y == height - 2 || ctrl_pressed) {
+    case GDK_KEY_Left:
       new_x -= player_speed;
-      if (new_x < 1)
-        new_x = 1;
+      if (new_x < 0) new_x = 0;
       dx = -1;
       dy = 0;
-    }
-    break;
-  case GDK_KEY_Right:
-    if (player_y == 1 || player_y == height - 2 || ctrl_pressed) {
+      break;
+    case GDK_KEY_Right:
       new_x += player_speed;
-      if (new_x > width - 2)
-        new_x = width - 2;
+      if (new_x > width) new_x = width;
       dx = 1;
       dy = 0;
-    }
-    break;
-  case GDK_KEY_Up:
-    if (player_x == 1 || player_x == width - 2 || ctrl_pressed) {
+      break;
+    case GDK_KEY_Up:
       new_y -= player_speed;
-      if (new_y < 1)
-        new_y = 1;
+      if (new_y < 0) new_y = 0;
       dx = 0;
       dy = -1;
-    }
-    break;
-  case GDK_KEY_Down:
-    if (player_x == 1 || player_x == width - 2 || ctrl_pressed) {
+      break;
+    case GDK_KEY_Down:
       new_y += player_speed;
-      if (new_y > height - 2)
-        new_y = height - 2;
+      if (new_y > height) new_y = height;
       dx = 0;
       dy = 1;
-    }
-    break;
+      break;
   }
 
   // Update player position and check for direction change
-  if (ctrl_pressed && !(new_x <= 1 || new_x >= width - 2 || new_y <= 1 || new_y >= height - 2)) {
+  if (shift_pressed) {
     update_player_position(new_x, new_y);
+
+    if ((dx != last_dx || dy != last_dy)) {
+      // Save point on direction change
+      add_player_point(original_player_x, original_player_y); // (player_x, player_y);
+      last_dx = dx;
+      last_dy = dy;
+    }
+
+    // Check if player reached the boundary
+    if (player_x == 0 || player_x == width || player_y == 0 || player_y == height) {
+      if ((player_y == 0 || player_y == height) && drawing_complete == FALSE) {
+        // Complete shape vertically
+        add_player_point(player_x, player_y);
+        add_player_point(last_player_x, player_y);
+      } else if ((player_x == 0 || player_x == width) && drawing_complete == FALSE) {
+        // Complete shape horizontally
+        add_player_point(player_x, player_y);
+        add_player_point(player_x, last_player_y);
+      }
+      drawing_complete = TRUE;
+    }
   } else {
     player_x = new_x;
     player_y = new_y;
@@ -83,33 +92,12 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
     last_player_y = new_y;
   }
 
-  if ((dx != last_dx || dy != last_dy) && ctrl_pressed) {
-    // Save point on direction change
-    add_player_point(original_player_x, original_player_y); // (player_x, player_y);
-    last_dx = dx;
-    last_dy = dy;
-  }
-
-  // Check if player reached the boundary
-  if (player_x == 0 || player_x == width || player_y == 0 || player_y == height) {
-    if ((player_y == 0 || player_y == height) && drawing_complete == FALSE && ctrl_pressed) {
-      // Complete shape vertically
-      add_player_point(0.0, player_y);      // Adding the boundary point on the left
-      add_player_point(0.0, last_player_y); // Adding the boundary point at the last known y position
-    } else if ((player_x == 0 || player_x == width) && drawing_complete == FALSE && ctrl_pressed) {
-      // Complete shape horizontally
-      add_player_point(player_x, 0.0);      // Adding the boundary point on the top
-      add_player_point(last_player_x, 0.0); // Adding the boundary point at the last known x position
-    }
+  if (!shift_pressed && was_shift_pressed) {
+    // Shift key was released, set drawing_complete flag
     drawing_complete = TRUE;
   }
 
-  if (!ctrl_pressed && was_ctrl_pressed) {
-    // Control key was released, set drawing_complete flag
-    drawing_complete = TRUE;
-  }
-
-  was_ctrl_pressed = ctrl_pressed;
+  was_shift_pressed = shift_pressed;
 
   gtk_widget_queue_draw(GTK_WIDGET(user_data)); // Redraw the area
   return TRUE;

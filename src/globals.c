@@ -47,7 +47,7 @@ unsigned int qix_color_index = 1;
 
 gboolean app_running = TRUE;
 guint timeout_id = 0;
-gboolean drawing_complete = FALSE;
+gboolean drawing_complete = TRUE;
 
 double line_x = 320, line_y = 240;
 double line_dx = 0, line_dy = 0;
@@ -59,9 +59,6 @@ unsigned filled_shape_count = 0;
 
 Line player_lines[MAX_LINES];
 unsigned player_line_count = 0;
-
-// Point player_points[MAX_POINTS];
-// unsigned player_point_count = 0;
 
 double line_x1, line_y1, line_x2, line_y2;
 
