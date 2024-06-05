@@ -1,6 +1,5 @@
 #include "includes/lines.h"
 #include "includes/globals.h"
-#include <cairo.h>
 #include <stdio.h> // Include for debug prints
 
 void add_player_line(const double x1, const double y1, const double x2, const double y2) {
@@ -11,13 +10,6 @@ void add_player_line(const double x1, const double y1, const double x2, const do
     player_lines[player_line_count].y2 = y2;
     player_line_count++;
   }
-  /*  This is adding a lot of points for some reason.
-  if (player_point_count < MAX_POINTS) {
-    player_points[player_point_count].x = x1;
-    player_points[player_point_count].y = y1;
-    player_point_count++;
-  }
-  */
 }
 
 void draw_player_lines(cairo_t *cr) {
@@ -56,7 +48,7 @@ void add_filled_shape(const Point *points, const unsigned int point_count) {
 
 void add_player_point(const double x, const double y) {
   shape_points[shape_point_count++] = (Point){x, y};
-  printf("Shape Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
+  printf("Shape Point added: (X: %.0f, Y: %.0f)\n", x, y); // Debug print
 }
 
 void complete_shape_to_boundary() {
@@ -122,7 +114,7 @@ void complete_shape_to_boundary() {
   if (shape_points[shape_point_count - 1].x != first_point.x || shape_points[shape_point_count - 1].y != first_point.y) {
     shape_points[shape_point_count++] = first_point;
   }
-  printf("Completed shape to boundary - (%d, %d)\n", last_point.x, last_point.y);
+  printf("Completed shape to boundary - (%.0f, %.0f)\n", last_point.x, last_point.y);
 }
 
 void fill_shape(cairo_t *cr) {
@@ -145,26 +137,41 @@ void fill_shape(cairo_t *cr) {
   // Store the filled shape before drawing it
   add_filled_shape(shape_points, shape_point_count);
 
-  // Draw the shape
-  cairo_set_source_rgba(cr, colors[LIGHT_BLUE][0], colors[LIGHT_BLUE][1], colors[LIGHT_BLUE][2], 0.5); // Semi-transparent VGA blue color
-  cairo_move_to(cr, shape_points[0].x, shape_points[0].y);
+  // Draw the filled shape
+  // cairo_set_source_rgba(cr, colors[LIGHT_BLUE][0], colors[LIGHT_BLUE][1], colors[LIGHT_BLUE][2], 0.5); // Semi-transparent VGA blue color
+  // cairo_move_to(cr, shape_points[0].x, shape_points[0].y);
 
-  for (size_t i = 1; i < shape_point_count; i++) {
-    cairo_line_to(cr, shape_points[i].x, shape_points[i].y);
-  }
+  // for (size_t i = 1; i < shape_point_count; i++) {
+  //   cairo_line_to(cr, shape_points[i].x, shape_points[i].y);
+  // }
 
-  cairo_close_path(cr);
-  cairo_fill(cr);
+  // cairo_close_path(cr);
+  // cairo_fill(cr);
+
+  // Draw the border
+  // cairo_set_source_rgb(cr, colors[LIGHT_CYAN][0], colors[LIGHT_CYAN][1], colors[LIGHT_CYAN][2]);
+  // cairo_set_line_width(cr, 2.0);
+
+  // cairo_move_to(cr, shape_points[0].x, shape_points[0].y);
+
+  // for (size_t i = 1; i < shape_point_count; i++) {
+  //   cairo_line_to(cr, shape_points[i].x, shape_points[i].y);
+  // }
+
+  // cairo_close_path(cr);
+  // cairo_stroke(cr);
 
   // Reset the points after filling
-  // player_point_count = 0;
   shape_point_count = 0;
+  player_line_count = 0;
 
   printf("Shape Points reset\n");
 }
 
+
 void draw_filled_shapes(cairo_t *cr) {
   for (size_t i = 0; i < filled_shape_count; i++) {
+    // Draw the filled shape
     cairo_set_source_rgba(cr, colors[BLUE][0], colors[BLUE][1], colors[BLUE][2], 0.5); // Semi-transparent VGA blue color
     cairo_move_to(cr, filled_shapes[i].points[0].x, filled_shapes[i].points[0].y);
 
@@ -174,5 +181,19 @@ void draw_filled_shapes(cairo_t *cr) {
 
     cairo_close_path(cr);
     cairo_fill(cr);
+
+    // Draw the border
+    cairo_set_source_rgb(cr, colors[LIGHT_CYAN][0], colors[LIGHT_CYAN][1], colors[LIGHT_CYAN][2]);
+    cairo_set_line_width(cr, 2.0);
+
+    cairo_move_to(cr, filled_shapes[i].points[0].x, filled_shapes[i].points[0].y);
+
+    for (size_t j = 1; j < filled_shapes[i].point_count; j++) {
+      cairo_line_to(cr, filled_shapes[i].points[j].x, filled_shapes[i].points[j].y);
+    }
+
+    cairo_close_path(cr);
+    cairo_stroke(cr);
   }
 }
+
