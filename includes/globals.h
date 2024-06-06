@@ -23,7 +23,6 @@ extern double dx1, dy1, dx2, dy2;
 
 extern double line_x1, line_y1, line_x2, line_y2;
 extern unsigned int qix_color_index;
-// extern double offset;
 
 typedef struct {
   double x1, y1, x2, y2;

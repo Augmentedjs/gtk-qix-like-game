@@ -9,9 +9,10 @@
 
 Trail trails[TRAIL_MAX];
 unsigned int trail_count = 0;
-const double offset = 20.0; // Increased offset for more spread-out trails
+const double TRAIL_OFFSET = 15.0; // Increased offset for more spread-out trails
 const int direction_change_interval = 50; // Interval for direction change
 int update_counter = 0;
+double speed = 0;
 
 void add_trail_point(const double x, const double y) {
   if (trail_count >= TRAIL_MAX) {
@@ -25,7 +26,7 @@ void add_trail_point(const double x, const double y) {
   trails[trail_count].opacity = 1.0;
   trail_count++;
 
-  printf("Trail Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
+  //printf("Trail Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
 }
 
 void initialize_positions_and_directions(const int width, const int height) {
@@ -79,8 +80,8 @@ void update_line_position(double *x, double *y, double *dx, double *dy, const in
 }
 
 void randomize_direction_and_speed(double *dx, double *dy) {
-  double angle = (rand() % 360) * (M_PI / 180.0); // Random angle in radians
-  double speed = (rand() % 7 + 1); // Random speed between 1 and 7
+  const double angle = (rand() % 360) * (M_PI / 180.0); // Random angle in radians
+  speed = (rand() % 8 + 1); // Random speed between 1 and 8
 
   *dx = cos(angle) * speed;
   *dy = sin(angle) * speed;
@@ -122,10 +123,15 @@ void update_positions_and_trails(const int width, const int height) {
   trails[0].opacity = 1.0;
 
   // Apply offset to the remaining trails
+
+  const double offset_modifier = TRAIL_OFFSET * speed;
+
   for (size_t i = 1; i < TRAIL_COUNT; i++) {
-    trails[i].x1 = trails[i - 1].x1 - offset * dx1 / sqrt(dx1 * dx1 + dy1 * dy1);
-    trails[i].y1 = trails[i - 1].y1 - offset * dy1 / sqrt(dx1 * dx1 + dy1 * dy1);
-    trails[i].x2 = trails[i - 1].x2 - offset * dx2 / sqrt(dx2 * dx2 + dy2 * dy2);
-    trails[i].y2 = trails[i - 1].y2 - offset * dy2 / sqrt(dx2 * dx2 + dy2 * dy2);
+    const double trail_modifier = (offset_modifier * (0.25 * (i)));
+
+    trails[i].x1 = trails[i - 1].x1 - trail_modifier * dx1 / sqrt(dx1 * dx1 + dy1 * dy1);
+    trails[i].y1 = trails[i - 1].y1 - trail_modifier * dy1 / sqrt(dx1 * dx1 + dy1 * dy1);
+    trails[i].x2 = trails[i - 1].x2 - trail_modifier * dx2 / sqrt(dx2 * dx2 + dy2 * dy2);
+    trails[i].y2 = trails[i - 1].y2 - trail_modifier * dy2 / sqrt(dx2 * dx2 + dy2 * dy2);
   }
 }
