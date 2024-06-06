@@ -3,6 +3,7 @@
 
 #include <cairo.h>
 #include "globals.h"
+#include <stdio.h> // Include for debug prints
 
 void add_player_point(const double x, const double y);
 void add_player_line(const double x1, const double y1, const double x2, const double y2);

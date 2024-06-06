@@ -1,6 +1,4 @@
 #include "includes/player.h"
-#include "includes/lines.h"
-#include "includes/globals.h"
 
 double player_x, player_y;
 double player_speed = PLAYER_DEFAULT_SPEED;

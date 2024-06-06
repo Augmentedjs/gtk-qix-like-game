@@ -3,6 +3,8 @@
 
 #include <gtk/gtk.h>
 #include <cairo.h>
+#include "globals.h"
+#include "lines.h"
 
 #define PLAYER_DOT_COUNT 20
 #define PLAYER_DEFAULT_SPEED 5.0

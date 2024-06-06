@@ -1,6 +1,4 @@
 #include "includes/lines.h"
-#include "includes/globals.h"
-#include <stdio.h> // Include for debug prints
 
 void add_player_line(const double x1, const double y1, const double x2, const double y2) {
   if (player_line_count < MAX_LINES) {

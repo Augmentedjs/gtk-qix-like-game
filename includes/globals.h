@@ -16,12 +16,10 @@ extern gboolean app_running;
 extern guint timeout_id;
 extern gboolean drawing_complete;
 
-extern double line_x, line_y;
-extern double line_dx, line_dy;
 extern double last_dx, last_dy;
 extern double dx1, dy1, dx2, dy2;
+extern double qix_line_x1, qix_line_y1, qix_line_x2, qix_line_y2;
 
-extern double line_x1, line_y1, line_x2, line_y2;
 extern unsigned int qix_color_index;
 
 typedef struct {
@@ -44,11 +42,10 @@ extern unsigned int filled_shape_count;
 extern Line player_lines[MAX_LINES];
 extern unsigned int player_line_count;
 
-extern double player_colors[4][3];
-
 extern unsigned int shape_point_count;
 extern Point shape_points[MAX_POINTS];
 
+extern double player_colors[4][3];
 void initialize_player_colors(void);
 
 #endif // GLOBALS_H
