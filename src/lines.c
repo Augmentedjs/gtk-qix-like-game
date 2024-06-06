@@ -98,7 +98,6 @@ double clamp(double value, double min, double max) {
   return value < min ? min : (value > max ? max : value);
 }
 
-
 void fill_shape(cairo_t *cr) {
   if (shape_point_count < 2) {
     return;
@@ -156,7 +155,6 @@ void fill_shape(cairo_t *cr) {
   printf("Shape Points reset\n");
 }
 
-
 void draw_filled_shapes(cairo_t *cr) {
   for (size_t i = 0; i < filled_shape_count; i++) {
     // Draw the filled shape
@@ -184,4 +182,3 @@ void draw_filled_shapes(cairo_t *cr) {
     cairo_stroke(cr);
   }
 }
-

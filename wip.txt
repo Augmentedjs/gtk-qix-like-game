@@ -6,8 +6,8 @@ Stuff to work on with QIX
 . Player should be able to move on borders of drawn shapes
 . Player doesn't look correct, should be a diamond shape
 . Player can change speed for drawing
-. QIX Monster doesn't move correctly, needs face/movement algorithm
-. QIX Monster trails are too close and mirror direction vs a 'tail'
+x QIX Monster doesn't move correctly, needs face/movement algorithm
+x QIX Monster trails are too close and mirror direction vs a 'tail'
 . QIX Monster doesn't bounce off walls
 . QIX Monster doesn't kill player if touched
 . Need a title area on field
