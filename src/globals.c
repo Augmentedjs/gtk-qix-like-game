@@ -62,7 +62,7 @@ unsigned player_line_count = 0;
 
 double line_x1, line_y1, line_x2, line_y2;
 
-double offset = 5.0;
+// double offset = 5.0;
 
 unsigned int shape_point_count = 0;
 Point shape_points[MAX_POINTS];
