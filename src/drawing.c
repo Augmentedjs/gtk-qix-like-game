@@ -7,12 +7,6 @@
 
 // This is for drawing the screen and objects
 
-// void drawDot(cairo_t *cr, const int x, const int y) {
-//   cairo_set_source_rgb(cr, colors[1][0], colors[1][1], colors[1][2]);
-//   cairo_arc(cr, x, y, 2, 0, 2 * M_PI);
-//   cairo_fill(cr);
-// }
-
 static void draw_background(cairo_t *cr, const int width, const int height) {
   // Set the background color to black
   cairo_set_source_rgb(cr, colors[BLACK][0], colors[BLACK][1], colors[BLACK][2]);
@@ -59,18 +53,15 @@ void draw_QIX_line(cairo_t *cr, const double x1, const double y1, const double x
   cairo_stroke(cr);
 }
 
-// void draw_points(cairo_t *cr) {
-//   if (shape_point_count > 0) {
-//     printf("Draw points %d\n", shape_point_count);
-//     for (size_t i = 0; i < shape_point_count; i++) {
-//       drawDot(cr, shape_points->x, shape_points->y);
-//       printf("X: %d Y:%d   \n", shape_points->x, shape_points->y);
-//     }
-//     printf("\n");
-//   }
-// }
+void draw_trails(cairo_t *cr) {
+  for (size_t i = 0; i < TRAIL_COUNT; i++) {
+    if (trails[i].opacity > 0) {
+      draw_QIX_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0, qix_color_index);
+    }
+  }
+}
 
-void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
+void on_draw(GtkDrawingArea *area, cairo_t *cr, const int width, const int height, gpointer user_data) {
   // Draw the background and the white border
   draw_background(cr, width, height);
 
@@ -87,19 +78,36 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
   draw_filled_shapes(cr);
 
   // Draw the trails first
-  for (size_t i = 0; i < TRAIL_COUNT; i++) {
-    if (trails[i].opacity > 0) {
-      draw_QIX_line(cr, trails[i].x1, trails[i].y1, trails[i].x2, trails[i].y2, trails[i].opacity, 1.0, qix_color_index);
-    }
-  }
+  draw_trails(cr);
+
   // Draw the current line
-  draw_QIX_line(cr, line_x1, line_y1, line_x2, line_y2, 1.0, 2.0, qix_color_index);
+  draw_QIX_line(cr, qix_line_x1, qix_line_y1, qix_line_x2, qix_line_y2, 1.0, 2.0, qix_color_index);
 
   // Draw player-drawn lines
   draw_player_lines(cr);
 
   // Draw the player
   draw_player(cr);
+}
 
-  // draw_points(cr);
+// Function to generate a random number between min and max (inclusive)
+double random_range(const int min, const int max) {
+  return (double) (min + rand() % (max - min + 1));
+}
+
+// Function to generate a random line within the specified constraints
+void generate_random_line(const int width, const int height, const int max_distance, Point* p1, Point* p2) {
+  // Generate the first point randomly within the window bounds
+  p1->x = random_range(0, width - 1);
+  p1->y = random_range(0, height - 1);
+
+  // Calculate the range for the second point
+  double min_x2 = clamp(p1->x - max_distance, 0, width - 1);
+  double max_x2 = clamp(p1->x + max_distance, 0, width - 1);
+  double min_y2 = clamp(p1->y - max_distance, 0, height - 1);
+  double max_y2 = clamp(p1->y + max_distance, 0, height - 1);
+
+  // Generate the second point within the specified range
+  p2->x = random_range(min_x2, max_x2);
+  p2->y = random_range(min_y2, max_y2);
 }

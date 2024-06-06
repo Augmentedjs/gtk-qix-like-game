@@ -49,8 +49,6 @@ gboolean app_running = TRUE;
 guint timeout_id = 0;
 gboolean drawing_complete = TRUE;
 
-double line_x = 320, line_y = 240;
-double line_dx = 0, line_dy = 0;
 double last_dx = 0, last_dy = 0;
 double dx1, dy1, dx2, dy2;
 
@@ -60,9 +58,7 @@ unsigned filled_shape_count = 0;
 Line player_lines[MAX_LINES];
 unsigned player_line_count = 0;
 
-double line_x1, line_y1, line_x2, line_y2;
-
-double offset = 5.0;
+double qix_line_x1, qix_line_y1, qix_line_x2, qix_line_y2;
 
 unsigned int shape_point_count = 0;
 Point shape_points[MAX_POINTS];

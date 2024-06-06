@@ -1,8 +1,4 @@
 #include "includes/events.h"
-#include "includes/globals.h"
-#include "includes/lines.h"
-#include "includes/player.h"
-#include "includes/qix_monster.h"
 
 gboolean on_timeout(gpointer user_data) {
   GtkWidget *drawing_area = GTK_WIDGET(user_data);
@@ -13,7 +9,6 @@ gboolean on_timeout(gpointer user_data) {
 
   // Update positions and trails
   update_positions_and_trails(width, height);
-  update_bouncing_line_position();
 
   // Queue redraw of the drawing area
   gtk_widget_queue_draw(drawing_area);
@@ -30,7 +25,7 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
   double new_y = player_y;
   int dx = 0, dy = 0;
 
-  // save original point for possible storage
+  // Save original point for possible storage
   const double original_player_x = player_x;
   const double original_player_y = player_y;
 
@@ -67,7 +62,7 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
 
     if ((dx != last_dx || dy != last_dy)) {
       // Save point on direction change
-      add_player_point(original_player_x, original_player_y); // (player_x, player_y);
+      add_player_point(original_player_x, original_player_y);
       last_dx = dx;
       last_dy = dy;
     }

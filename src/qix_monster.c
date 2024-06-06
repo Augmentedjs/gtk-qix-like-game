@@ -1,11 +1,12 @@
 #include "includes/qix_monster.h"
-#include "includes/drawing.h"
-#include "includes/player.h"
-#include "includes/globals.h"
-#include <stdio.h>
 
 Trail trails[TRAIL_MAX];
 unsigned int trail_count = 0;
+const double TRAIL_OFFSET = 15.0; // Increased offset for more spread-out trails
+int direction_change_interval = 75; // Interval for direction change
+int update_counter = 0;
+double speed = 0;
+const double MAX_DISTANCE = 50;
 
 void add_trail_point(const double x, const double y) {
   if (trail_count >= TRAIL_MAX) {
@@ -19,34 +20,7 @@ void add_trail_point(const double x, const double y) {
   trails[trail_count].opacity = 1.0;
   trail_count++;
 
-  printf("Trail Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
-}
-
-void update_bouncing_line_position() {
-  // Update line position
-  line_x += line_dx;
-  line_y += line_dy;
-
-  // Check for collisions with window edges
-  if (line_x <= 0 || line_x >= width) {
-      line_dx = -line_dx;
-  }
-  if (line_y <= 0 || line_y >= height) {
-      line_dy = -line_dy;
-  }
-
-  // Check for collisions with shape boundaries
-  for (size_t i = 0; i < filled_shape_count; i++) {
-    Shape *shape = &filled_shapes[i];
-    if (line_x >= shape->min_x && line_x <= shape->max_x && line_y >= shape->min_y && line_y <= shape->max_y) {
-      if (line_x <= shape->min_x || line_x >= shape->max_x) {
-        line_dx = -line_dx;
-      }
-      if (line_y <= shape->min_y || line_y >= shape->max_y) {
-        line_dy = -line_dy;
-      }
-    }
-  }
+  //printf("Trail Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
 }
 
 void initialize_positions_and_directions(const int width, const int height) {
@@ -54,23 +28,24 @@ void initialize_positions_and_directions(const int width, const int height) {
   srand(time(NULL));
 
   // Initialize line positions randomly within the window bounds
-  line_x1 = rand() % width;
-  line_y1 = rand() % height;
-  line_x2 = rand() % width;
-  line_y2 = rand() % height;
+  Point p1, p2;
+  // Generate a random line
+  generate_random_line(width, height, MAX_DISTANCE, &p1, &p2);
+  qix_line_x1 = p1.x;
+  qix_line_y1 = p1.y;
+  qix_line_x2 = p2.x;
+  qix_line_y2 = p2.y;
 
-  // Initialize direction vectors randomly (-2, -1, 1, 2)
-  dx1 = (rand() % 3 + 1) * (rand() % 2 ? 1 : -1);
-  dy1 = (rand() % 3 + 1) * (rand() % 2 ? 1 : -1);
-  dx2 = (rand() % 3 + 1) * (rand() % 2 ? 1 : -1);
-  dy2 = (rand() % 3 + 1) * (rand() % 2 ? 1 : -1);
+  // Initialize direction vectors randomly
+  randomize_direction_and_speed(&dx1, &dy1);
+  randomize_direction_and_speed(&dx2, &dy2);
 
   // Initialize trails
   for (size_t i = 0; i < TRAIL_COUNT; i++) {
-    trails[i].x1 = line_x1;
-    trails[i].y1 = line_y1;
-    trails[i].x2 = line_x2;
-    trails[i].y2 = line_y2;
+    trails[i].x1 = qix_line_x1;
+    trails[i].y1 = qix_line_y1;
+    trails[i].x2 = qix_line_x2;
+    trails[i].y2 = qix_line_x2;
     trails[i].opacity = 0.0;
   }
 }
@@ -101,12 +76,33 @@ void update_line_position(double *x, double *y, double *dx, double *dy, const in
   }
 }
 
+void randomize_direction_and_speed(double *dx, double *dy) {
+  const double angle = (rand() % 360) * (M_PI / 180.0); // Random angle in radians
+  speed = (rand() % 4 + 1); // Random speed between 1 and 4
+
+  *dx = cos(angle) * speed;
+  *dy = sin(angle) * speed;
+
+  direction_change_interval = (rand() % 50 + 50);
+  printf("direction_change_interval %d\n", direction_change_interval);
+}
+
 void update_positions_and_trails(const int width, const int height) {
   gboolean bounced1 = FALSE, bounced2 = FALSE;
 
   // Update line position for both points
-  update_line_position(&line_x1, &line_y1, &dx1, &dy1, width, height, &bounced1);
-  update_line_position(&line_x2, &line_y2, &dx2, &dy2, width, height, &bounced2);
+  update_line_position(&qix_line_x1, &qix_line_y1, &dx1, &dy1, width, height, &bounced1);
+  update_line_position(&qix_line_x2, &qix_line_y2, &dx2, &dy2, width, height, &bounced2);
+
+  // Increment the update counter
+  update_counter++;
+
+  // Randomize direction and speed at specific intervals
+  if (update_counter >= direction_change_interval) {
+    randomize_direction_and_speed(&dx1, &dy1);
+    randomize_direction_and_speed(&dx2, &dy2);
+    update_counter = 0; // Reset the counter
+  }
 
   // Change color only if any point bounces off the boundary
   if (bounced1 || bounced2) {
@@ -120,17 +116,22 @@ void update_positions_and_trails(const int width, const int height) {
   }
 
   // Set the position for the first trail
-  trails[0].x1 = line_x1;
-  trails[0].y1 = line_y1;
-  trails[0].x2 = line_x2;
-  trails[0].y2 = line_y2;
+  trails[0].x1 = qix_line_x1;
+  trails[0].y1 = qix_line_y1;
+  trails[0].x2 = qix_line_x2;
+  trails[0].y2 = qix_line_y2;
   trails[0].opacity = 1.0;
 
   // Apply offset to the remaining trails
+
+  const double offset_modifier = TRAIL_OFFSET * speed;
+
   for (size_t i = 1; i < TRAIL_COUNT; i++) {
-    trails[i].x1 = trails[i - 1].x1 - offset * dx1 / sqrt(dx1 * dx1 + dy1 * dy1);
-    trails[i].y1 = trails[i - 1].y1 - offset * dy1 / sqrt(dx1 * dx1 + dy1 * dy1);
-    trails[i].x2 = trails[i - 1].x2 - offset * dx2 / sqrt(dx2 * dx2 + dy2 * dy2);
-    trails[i].y2 = trails[i - 1].y2 - offset * dy2 / sqrt(dx2 * dx2 + dy2 * dy2);
+    const double trail_modifier = (offset_modifier * (0.25 * (i)));
+
+    trails[i].x1 = trails[i - 1].x1 - trail_modifier * dx1 / sqrt(dx1 * dx1 + dy1 * dy1);
+    trails[i].y1 = trails[i - 1].y1 - trail_modifier * dy1 / sqrt(dx1 * dx1 + dy1 * dy1);
+    trails[i].x2 = trails[i - 1].x2 - trail_modifier * dx2 / sqrt(dx2 * dx2 + dy2 * dy2);
+    trails[i].y2 = trails[i - 1].y2 - trail_modifier * dy2 / sqrt(dx2 * dx2 + dy2 * dy2);
   }
 }
