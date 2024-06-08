@@ -84,7 +84,7 @@ void randomize_direction_and_speed(double *dx, double *dy) {
   *dy = sin(angle) * speed;
 
   direction_change_interval = (rand() % 50 + 50);
-  printf("direction_change_interval %d\n", direction_change_interval);
+  //printf("direction_change_interval %d\n", direction_change_interval);
 }
 
 void update_positions_and_trails(const int width, const int height) {

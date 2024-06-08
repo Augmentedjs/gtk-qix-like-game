@@ -9,6 +9,8 @@
 #define MAX_SHAPES 100
 #define APPLICATION_NAME "com.augmentedjs.qixline"
 #define APPLICATION_TITLE "QIX Style Line Drawing with Trails"
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 
 extern int width;
 extern int height;

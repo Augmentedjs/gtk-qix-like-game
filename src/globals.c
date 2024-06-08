@@ -1,7 +1,7 @@
 #include "includes/globals.h"
 
-int width = 640;
-int height = 480;
+int width = SCREEN_WIDTH;
+int height = SCREEN_HEIGHT;
 
 double colors[COLOR_COUNT][3] = {
   {0.0, 0.0, 0.0},     // Black
