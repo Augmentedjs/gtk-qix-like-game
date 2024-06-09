@@ -53,12 +53,15 @@ double last_dx = 0, last_dy = 0;
 double dx1, dy1, dx2, dy2;
 
 Shape filled_shapes[MAX_SHAPES];
-unsigned filled_shape_count = 0;
+unsigned int filled_shape_count = 0;
 
 Line player_lines[MAX_LINES];
-unsigned player_line_count = 0;
+unsigned int player_line_count = 0;
 
 double qix_line_x1, qix_line_y1, qix_line_x2, qix_line_y2;
 
 unsigned int shape_point_count = 0;
 Point shape_points[MAX_POINTS];
+
+int qix_monster_x = 0;
+int qix_monster_y = 0;

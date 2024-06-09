@@ -3,8 +3,8 @@
 Trail trails[TRAIL_MAX];
 unsigned int trail_count = 0;
 const double TRAIL_OFFSET = 15.0; // Increased offset for more spread-out trails
-int direction_change_interval = 75; // Interval for direction change
-int update_counter = 0;
+unsigned int direction_change_interval = 75; // Interval for direction change
+unsigned int update_counter = 0;
 double speed = 0;
 const double MAX_DISTANCE = 50;
 
@@ -74,6 +74,9 @@ void update_line_position(double *x, double *y, double *dx, double *dy, const in
     *dy = -*dy;
     *bounced = TRUE;
   }
+
+  qix_monster_x = (int)((double)((*x + *dx) / 2));
+  qix_monster_y = (int)((double)((*x + *dx) / 2));
 }
 
 void randomize_direction_and_speed(double *dx, double *dy) {

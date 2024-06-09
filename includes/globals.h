@@ -24,6 +24,9 @@ extern double qix_line_x1, qix_line_y1, qix_line_x2, qix_line_y2;
 
 extern unsigned int qix_color_index;
 
+extern int qix_monster_x;
+extern int qix_monster_y;
+
 typedef struct {
   double x1, y1, x2, y2;
 } Line;
