@@ -169,9 +169,9 @@ void fill_shape(cairo_t *cr) {
   convert_filled_area_to_points(new_points, &new_point_count);
 
   printf("New points count: %d\n", new_point_count);
-  for (unsigned int i = 0; i < new_point_count; i++) {
-    printf("New point %d: (X: %d, Y: %d)\n", i, (int)new_points[i].x, (int)new_points[i].y); // Debug print
-  }
+  // for (unsigned int i = 0; i < new_point_count; i++) {
+  //   printf("New point %d: (X: %d, Y: %d)\n", i, (int)new_points[i].x, (int)new_points[i].y); // Debug print
+  // }
 
   if (new_point_count == 0) {
     printf("No new points were filled.\n");

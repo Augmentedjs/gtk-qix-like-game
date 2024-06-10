@@ -87,93 +87,47 @@ void flood_fill(const int x, const int y) {
     return;
   }
 
-  Node *front = (Node *)malloc(sizeof(Node));
-  if (!front) {
-    printf("Memory allocation failed for flood fill deque\n");
+  Node *stack = (Node *)malloc(width * height * sizeof(Node));
+  if (!stack) {
+    printf("Memory allocation failed for flood fill stack\n");
     return;
   }
-  front->x = x;
-  front->y = y;
-  front->next = NULL;
 
-  Node *rear = front;
+  int stack_size = 0;
+  stack[stack_size++] = (Node){x, y, NULL};
 
-  int count = 0;
-  const int max_fill_points = width * height;
+  while (stack_size > 0) {
+    Node current = stack[--stack_size];
 
-  while (front != NULL) {
-    Node *current = front;
-    front = front->next;
-
-    int px = current->x, py = current->y;
-    free(current);
-
-    if (px < 0 || px >= width || py < 0 || py >= height)
-      continue;
-    if (bitmap[px][py] != EMPTY)
-      continue;
-
-    bitmap[px][py] = FILLED;
-    // printf("Filled point: (X: %d, Y: %d)\n", px, py); // Debug print
-
-    count++;
-    if (count > max_fill_points) {
-      printf("Flood fill exceeded maximum points, stopping to prevent crash\n");
-      break;
+    int x1 = current.x;
+    while (x1 >= 0 && bitmap[x1][current.y] == EMPTY) {
+      x1--;
     }
+    x1++;
 
-    Node *new_node = NULL;
+    int span_above = 0;
+    int span_below = 0;
+    while (x1 < width && bitmap[x1][current.y] == EMPTY) {
+      bitmap[x1][current.y] = FILLED;
+      printf("Filled point: (X: %d, Y: %d)\n", x1, current.y); // Debug print
 
-    // Add (px + 1, py)
-    if (px + 1 < width && bitmap[px + 1][py] == EMPTY) {
-      new_node = (Node *)malloc(sizeof(Node));
-      if (!new_node) {
-        printf("Memory allocation failed for flood fill deque\n");
-        continue;
+      if (!span_above && current.y > 0 && bitmap[x1][current.y - 1] == EMPTY) {
+        stack[stack_size++] = (Node){x1, current.y - 1, NULL};
+        span_above = 1;
+      } else if (span_above && current.y > 0 && bitmap[x1][current.y - 1] != EMPTY) {
+        span_above = 0;
       }
-      new_node->x = px + 1;
-      new_node->y = py;
-      new_node->next = front;
-      front = new_node;
-    }
 
-    // Add (px - 1, py)
-    if (px - 1 >= 0 && bitmap[px - 1][py] == EMPTY) {
-      new_node = (Node *)malloc(sizeof(Node));
-      if (!new_node) {
-        printf("Memory allocation failed for flood fill deque\n");
-        continue;
+      if (!span_below && current.y < height - 1 && bitmap[x1][current.y + 1] == EMPTY) {
+        stack[stack_size++] = (Node){x1, current.y + 1, NULL};
+        span_below = 1;
+      } else if (span_below && current.y < height - 1 && bitmap[x1][current.y + 1] != EMPTY) {
+        span_below = 0;
       }
-      new_node->x = px - 1;
-      new_node->y = py;
-      new_node->next = front;
-      front = new_node;
-    }
 
-    // Add (px, py + 1)
-    if (py + 1 < height && bitmap[px][py + 1] == EMPTY) {
-      new_node = (Node *)malloc(sizeof(Node));
-      if (!new_node) {
-        printf("Memory allocation failed for flood fill deque\n");
-        continue;
-      }
-      new_node->x = px;
-      new_node->y = py + 1;
-      new_node->next = front;
-      front = new_node;
-    }
-
-    // Add (px, py - 1)
-    if (py - 1 >= 0 && bitmap[px][py - 1] == EMPTY) {
-      new_node = (Node *)malloc(sizeof(Node));
-      if (!new_node) {
-        printf("Memory allocation failed for flood fill deque\n");
-        continue;
-      }
-      new_node->x = px;
-      new_node->y = py - 1;
-      new_node->next = front;
-      front = new_node;
+      x1++;
     }
   }
+
+  free(stack);
 }
