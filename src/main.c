@@ -14,9 +14,9 @@ static void activate(GtkApplication *app, gpointer user_data) {
   GtkEventController *controller;
 
   // Initialize random positions and directions
-  initialize_positions_and_directions(width, height);
+  initialize_positions_and_directions();
   // Initialize player position on the bottom border
-  initialize_player_position(width, height);
+  initialize_player_position();
 
   // Initialize player colors
   initialize_player_colors();

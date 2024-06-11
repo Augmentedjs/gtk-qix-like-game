@@ -42,7 +42,7 @@ void update_player_position(const double x, const double y) {
   last_player_y = y;
 }
 
-void initialize_player_position(const int width, const int height) {
+void initialize_player_position() {
   player_x = width / 2;
   player_y = height;
   last_player_x = player_x;

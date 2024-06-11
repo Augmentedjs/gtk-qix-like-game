@@ -27,9 +27,9 @@ extern double speed;
 extern const double MAX_DISTANCE;
 
 void add_trail_point(const double x, const double y);
-void initialize_positions_and_directions(const int width, const int height);
-void update_positions_and_trails(const int width, const int height);
-void update_line_position(double *x, double *y, double *dx, double *dy, const int width, const int height, gboolean *bounced);
+void initialize_positions_and_directions();
+void update_positions_and_trails();
+void update_line_position(double *x, double *y, double *dx, double *dy, gboolean *bounced);
 void randomize_direction_and_speed(double *dx, double *dy);
 
 #endif
