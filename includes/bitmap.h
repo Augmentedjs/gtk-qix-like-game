@@ -20,4 +20,7 @@ void mark_walls(const Point *points, const unsigned int point_count);
 void flood_fill(const int x, const int y);
 void convert_filled_area_to_points(Point *filled_points, unsigned int *point_count);
 
+// for debug
+void print_bitmap_summary();
+
 #endif // BITMAP_H

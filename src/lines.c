@@ -1,5 +1,4 @@
 #include "includes/lines.h"
-#include "bitmap.h"
 
 void add_player_line(const double x1, const double y1, const double x2, const double y2) {
   if (player_line_count < MAX_LINES) {
@@ -12,7 +11,7 @@ void add_player_line(const double x1, const double y1, const double x2, const do
 }
 
 void draw_player_lines(cairo_t *cr) {
-  cairo_set_source_rgb(cr, colors[LIGHT_BLUE][0], colors[LIGHT_BLUE][1], colors[LIGHT_BLUE][2]); // VGA blue color
+  cairo_set_source_rgb(cr, colors[LIGHT_BLUE][0], colors[LIGHT_BLUE][1], colors[LIGHT_BLUE][2]);
   cairo_set_line_width(cr, 2.0);
   for (size_t i = 0; i < player_line_count; i++) {
     cairo_move_to(cr, player_lines[i].x1, player_lines[i].y1);
@@ -149,15 +148,15 @@ void fill_shape(cairo_t *cr) {
 
   printf("Point Count - %d\n", shape_point_count);
 
-  // Mark the walls in the bitmap
-  mark_walls(shape_points, shape_point_count);
+  // Mark the walls in the bitmap (for fill)
+  //mark_walls(shape_points, shape_point_count);
 
   // Find a starting point for flood fill inside the shape
-  Point start = find_interior_point();
-  printf("Starting flood fill at: (X: %d, Y: %d)\n", (int)start.x, (int)start.y); // Debug print
+  //Point start = find_interior_point();
+  //printf("Starting flood fill at: (X: %d, Y: %d)\n", (int)start.x, (int)start.y); // Debug print
 
-  // Perform flood fill
-  flood_fill((int)start.x, (int)start.y);
+  // Perform flood fill (Broken)
+  //flood_fill((int)start.x, (int)start.y);
 
   // Convert the filled area to points
   Point *new_points = (Point *)malloc(width * height * sizeof(Point));

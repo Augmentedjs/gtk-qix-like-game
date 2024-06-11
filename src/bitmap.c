@@ -5,27 +5,27 @@
 int **bitmap;
 
 void initialize_bitmap() {
-  bitmap = (int **)malloc(width * sizeof(int *));
+  bitmap = (int **)malloc(height * sizeof(int *));
   if (!bitmap) {
-    printf("Memory allocation failed for bitmap columns\n");
+    printf("Memory allocation failed for bitmap rows\n");
     return;
   }
-  for (int i = 0; i < width; i++) {
-    bitmap[i] = (int *)malloc(height * sizeof(int));
-    if (!bitmap[i]) {
-      printf("Memory allocation failed for bitmap rows at column %d\n", i);
+  for (int y = 0; y < height; y++) {
+    bitmap[y] = (int *)malloc(width * sizeof(int));
+    if (!bitmap[y]) {
+      printf("Memory allocation failed for bitmap columns at row %d\n", y);
       return;
     }
-    for (int j = 0; j < height; j++) {
-      bitmap[i][j] = EMPTY;
+    for (int x = 0; x < width; x++) {
+      bitmap[y][x] = EMPTY;
     }
   }
 }
 
 void free_bitmap() {
   if (bitmap) {
-    for (int i = 0; i < width; i++) {
-      free(bitmap[i]);
+    for (int y = 0; y < height; y++) {
+      free(bitmap[y]);
     }
     free(bitmap);
   }
@@ -40,7 +40,7 @@ void draw_line(int x1, int y1, int x2, int y2) {
 
   while (1) {
     if (x1 >= 0 && x1 < width && y1 >= 0 && y1 < height) {
-      bitmap[x1][y1] = WALL;
+      bitmap[y1][x1] = WALL;
       printf("Marked wall at: (X: %d, Y: %d)\n", x1, y1); // Debug print
     }
     if (x1 == x2 && y1 == y2)
@@ -59,17 +59,17 @@ void draw_line(int x1, int y1, int x2, int y2) {
 
 void mark_walls(const Point *points, const unsigned int point_count) {
   for (size_t i = 0; i < point_count - 1; i++) {
-    draw_line(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
+    draw_line((int)points[i].x, (int)points[i].y, (int)points[i + 1].x, (int)points[i + 1].y);
   }
   // Draw line from the last point to the first to close the shape
-  draw_line(points[point_count - 1].x, points[point_count - 1].y, points[0].x, points[0].y);
+  draw_line((int)points[point_count - 1].x, (int)points[point_count - 1].y, (int)points[0].x, (int)points[0].y);
 }
 
 void convert_filled_area_to_points(Point *filled_points, unsigned int *point_count) {
   *point_count = 0;
-  for (int x = 0; x < width; x++) {
-    for (int y = 0; y < height; y++) {
-      if (bitmap[x][y] == FILLED) {
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      if (bitmap[y][x] == FILLED) {
         filled_points[(*point_count)++] = (Point){x, y};
       }
     }
@@ -82,7 +82,7 @@ void flood_fill(const int x, const int y) {
     printf("Starting point is out of bounds\n");
     return;
   }
-  if (bitmap[x][y] != EMPTY) {
+  if (bitmap[y][x] != EMPTY) {
     printf("Starting point is not empty\n");
     return;
   }
@@ -100,28 +100,28 @@ void flood_fill(const int x, const int y) {
     Node current = stack[--stack_size];
 
     int x1 = current.x;
-    while (x1 >= 0 && bitmap[x1][current.y] == EMPTY) {
+    while (x1 >= 0 && bitmap[current.y][x1] == EMPTY) {
       x1--;
     }
     x1++;
 
     int span_above = 0;
     int span_below = 0;
-    while (x1 < width && bitmap[x1][current.y] == EMPTY) {
-      bitmap[x1][current.y] = FILLED;
+    while (x1 < width && bitmap[current.y][x1] == EMPTY) {
+      bitmap[current.y][x1] = FILLED;
       printf("Filled point: (X: %d, Y: %d)\n", x1, current.y); // Debug print
 
-      if (!span_above && current.y > 0 && bitmap[x1][current.y - 1] == EMPTY) {
+      if (!span_above && current.y > 0 && bitmap[current.y - 1][x1] == EMPTY) {
         stack[stack_size++] = (Node){x1, current.y - 1, NULL};
         span_above = 1;
-      } else if (span_above && current.y > 0 && bitmap[x1][current.y - 1] != EMPTY) {
+      } else if (span_above && current.y > 0 && bitmap[current.y - 1][x1] != EMPTY) {
         span_above = 0;
       }
 
-      if (!span_below && current.y < height - 1 && bitmap[x1][current.y + 1] == EMPTY) {
+      if (!span_below && current.y < height - 1 && bitmap[current.y + 1][x1] == EMPTY) {
         stack[stack_size++] = (Node){x1, current.y + 1, NULL};
         span_below = 1;
-      } else if (span_below && current.y < height - 1 && bitmap[x1][current.y + 1] != EMPTY) {
+      } else if (span_below && current.y < height - 1 && bitmap[current.y + 1][x1] != EMPTY) {
         span_below = 0;
       }
 
@@ -131,3 +131,21 @@ void flood_fill(const int x, const int y) {
 
   free(stack);
 }
+
+void print_bitmap_summary() {
+  printf("Bitmap summary:\n");
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      if (bitmap[y][x] == WALL) {
+        printf("#"); // Wall
+      } else if (bitmap[y][x] == FILLED) {
+        printf("."); // Filled
+      } else {
+        printf(" "); // Empty
+      }
+    }
+    printf("\n");
+  }
+  printf("\n");
+}
+
