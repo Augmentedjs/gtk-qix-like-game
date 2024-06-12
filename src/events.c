@@ -1,8 +1,5 @@
 #include "includes/events.h"
 
-extern gboolean drawing_complete;
-extern gboolean app_running;
-
 gboolean on_timeout(gpointer user_data) {
   GtkWidget *drawing_area = GTK_WIDGET(user_data);
 
@@ -96,9 +93,6 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
 
     // When drawing is complete, mark walls and add lines to the bitmap
     mark_walls(shape_points, shape_point_count);
-
-    // Print bitmap summary for debugging
-    print_bitmap_summary();
   }
 
   was_shift_pressed = shift_pressed;

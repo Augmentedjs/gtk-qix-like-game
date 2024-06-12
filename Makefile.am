@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign -Wall -Werror subdir-objects
 
 bin_PROGRAMS = qix_line
-qix_line_SOURCES = src/main.c src/globals.c src/bitmap.c src/drawing.c src/player.c src/qix_monster.c src/events.c src/lines.c 
+qix_line_SOURCES = src/main.c src/globals.c src/printer.c src/bitmap.c src/drawing.c src/player.c src/qix_monster.c src/events.c src/lines.c 
 
 # Add optimization flags (change -O2 to -O3 if needed)
 AM_CFLAGS = -O2 $(GTK_CFLAGS) -Iincludes

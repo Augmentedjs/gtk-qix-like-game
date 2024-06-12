@@ -1,4 +1,5 @@
-#include "bitmap.h"
+#include "includes/bitmap.h"
+#include "includes/printer.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -58,11 +59,12 @@ void draw_line(int x1, int y1, int x2, int y2) {
 }
 
 void mark_walls(const Point *points, const unsigned int point_count) {
+  printf("Mark walls %d\n", point_count);
   for (size_t i = 0; i < point_count - 1; i++) {
     draw_line((int)points[i].x, (int)points[i].y, (int)points[i + 1].x, (int)points[i + 1].y);
   }
   // Draw line from the last point to the first to close the shape
-  draw_line((int)points[point_count - 1].x, (int)points[point_count - 1].y, (int)points[0].x, (int)points[0].y);
+  //draw_line((int)points[point_count - 1].x, (int)points[point_count - 1].y, (int)points[0].x, (int)points[0].y);
 }
 
 void convert_filled_area_to_points(Point *filled_points, unsigned int *point_count) {
@@ -134,18 +136,23 @@ void flood_fill(const int x, const int y) {
 
 void print_bitmap_summary() {
   printf("Bitmap summary:\n");
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
-      if (bitmap[y][x] == WALL) {
-        printf("#"); // Wall
-      } else if (bitmap[y][x] == FILLED) {
-        printf("."); // Filled
-      } else {
-        printf(" "); // Empty
-      }
-    }
-    printf("\n");
-  }
-  printf("\n");
+  reduce_and_print_bitmap(bitmap);
+  // const unsigned int h = height / 8; // (80)
+  // const unsigned int w = width / 8; // (60)
+
+
+  // for (int y = 0; y < height; y++) {
+  //   for (int x = 0; x < width; x++) {
+  //     if (bitmap[y][x] == WALL) {
+  //       printf("#"); // Wall
+  //     } else if (bitmap[y][x] == FILLED) {
+  //       printf("."); // Filled
+  //     } else {
+  //       printf(" "); // Empty
+  //     }
+  //   }
+  //   printf("\n");
+  // }
+  // printf("\n");
 }
 

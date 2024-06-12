@@ -65,7 +65,9 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
 
   // Fill the shape if drawing is complete
   if (drawing_complete) {
-    fill_shape(cr);
+    //fill_shape(cr);
+    // Print bitmap summary for debugging
+    print_bitmap_summary();
     drawing_complete = FALSE; // Reset the flag after filling
   }
 
