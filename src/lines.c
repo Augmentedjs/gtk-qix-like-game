@@ -138,13 +138,13 @@ void fill_shape(cairo_t *cr) {
   }
 
   // Complete the shape to the boundary
-  complete_shape_to_boundary();
+  // complete_shape_to_boundary();
 
   // Ensure the shape has at least 4 sides
-  if (shape_point_count < 4) {
-    printf("Still fill shape too small - %d\n", shape_point_count);
-    return;
-  }
+  // if (shape_point_count < 4) {
+  //   printf("Still fill shape too small - %d\n", shape_point_count);
+  //   return;
+  // }
 
   printf("Point Count - %d\n", shape_point_count);
 
@@ -152,42 +152,42 @@ void fill_shape(cairo_t *cr) {
   //mark_walls(shape_points, shape_point_count);
 
   // Find a starting point for flood fill inside the shape
-  //Point start = find_interior_point();
-  //printf("Starting flood fill at: (X: %d, Y: %d)\n", (int)start.x, (int)start.y); // Debug print
+  Point start = find_interior_point();
+  printf("Starting flood fill at: (X: %d, Y: %d)\n", (int)start.x, (int)start.y); // Debug print
 
-  // Perform flood fill (Broken)
-  //flood_fill((int)start.x, (int)start.y);
+  // Perform flood fill
+  flood_fill((int)start.x, (int)start.y);
 
   // Convert the filled area to points
-  Point *new_points = (Point *)malloc(width * height * sizeof(Point));
-  if (!new_points) {
-    printf("Memory allocation failed for new_points\n");
-    return;
-  }
-  unsigned int new_point_count = 0;
-  convert_filled_area_to_points(new_points, &new_point_count);
+  // Point *new_points = (Point *)malloc(width * height * sizeof(Point));
+  // if (!new_points) {
+  //   printf("Memory allocation failed for new_points\n");
+  //   return;
+  // }
+  // unsigned int new_point_count = 0;
+  // convert_filled_area_to_points(new_points, &new_point_count);
 
-  printf("New points count: %d\n", new_point_count);
+  // printf("New points count: %d\n", new_point_count);
   // for (unsigned int i = 0; i < new_point_count; i++) {
   //   printf("New point %d: (X: %d, Y: %d)\n", i, (int)new_points[i].x, (int)new_points[i].y); // Debug print
   // }
 
-  if (new_point_count == 0) {
-    printf("No new points were filled.\n");
-    free(new_points);
-    shape_point_count = 0;
-    return;
-  }
+  // if (new_point_count == 0) {
+  //   printf("No new points were filled.\n");
+  //   free(new_points);
+  //   shape_point_count = 0;
+  //   return;
+  // }
 
   // Store the filled shape
-  add_filled_shape(new_points, new_point_count);
-  free(new_points);
+  // add_filled_shape(new_points, new_point_count);
+  // free(new_points);
 
   // Reset the points after filling
-  shape_point_count = 0;
-  player_line_count = 0;
+  // shape_point_count = 0;
+  // player_line_count = 0;
 
-  printf("Shape Points reset\n");
+  // printf("Shape Points reset\n");
 }
 
 void draw_filled_shapes(cairo_t *cr) {

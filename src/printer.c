@@ -1,9 +1,12 @@
 #include "printer.h"
 
+const char density_chars[] = " .:-=#@";
+
 // Function to shrink the bitmap and summarize pixels
 void shrink_bitmap(int **original, int reduced[NEW_HEIGHT][NEW_WIDTH]) {
-  int x_ratio = width / NEW_WIDTH;
-  int y_ratio = height / NEW_HEIGHT;
+  printf("Shrinking bitmap\n");
+  const int x_ratio = width / NEW_WIDTH;
+  const int y_ratio = height / NEW_HEIGHT;
 
   for (int h = 0; h < NEW_HEIGHT; h++) {
     for (int w = 0; w < NEW_WIDTH; w++) {
@@ -16,15 +19,20 @@ void shrink_bitmap(int **original, int reduced[NEW_HEIGHT][NEW_WIDTH]) {
       reduced[h][w] = sum; // Store the sum to determine density
     }
   }
+  printf("Bitmap shrunk\n");
 }
 
 // Function to print the reduced bitmap using different characters for different densities
-void print_bitmap(int reduced[NEW_HEIGHT][NEW_WIDTH]) {
-  char density_chars[] = " .:-=+*#%@";
-
+void print_bitmap(int reduced[NEW_HEIGHT][NEW_WIDTH], int x_ratio, int y_ratio) {
+  printf("Printing bitmap\n");
   for (int h = 0; h < NEW_HEIGHT; h++) {
     for (int w = 0; w < NEW_WIDTH; w++) {
-      int index = (reduced[h][w] * 9) / 64; // Map sum to an index in the density_chars array
+      int sum = reduced[h][w];
+      int index = (sum * (sizeof(density_chars) - 2)) / (x_ratio * y_ratio * 2);
+      if (index < 0)
+        index = 0;
+      if (index >= (sizeof(density_chars) - 1))
+        index = sizeof(density_chars) - 2;
       printf("%c", density_chars[index]);
     }
     printf("\n");
@@ -32,8 +40,16 @@ void print_bitmap(int reduced[NEW_HEIGHT][NEW_WIDTH]) {
 }
 
 int reduce_and_print_bitmap(int **bitmap) {
-  int reduced[NEW_HEIGHT][NEW_WIDTH] = {{0}};
+  printf("Reducing and printing bitmap\n");
+  int reduced[NEW_HEIGHT][NEW_WIDTH];
+  for (int i = 0; i < NEW_HEIGHT; i++) {
+    for (int j = 0; j < NEW_WIDTH; j++) {
+      reduced[i][j] = 0;
+    }
+  }
+  const int x_ratio = width / NEW_WIDTH;
+  const int y_ratio = height / NEW_HEIGHT;
   shrink_bitmap(bitmap, reduced);
-  print_bitmap(reduced);
+  print_bitmap(reduced, x_ratio, y_ratio);
   return 0;
 }

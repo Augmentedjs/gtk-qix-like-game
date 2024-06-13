@@ -7,10 +7,14 @@
 #define WALL 1
 #define FILLED 2
 
-typedef struct Node {
-  int x, y;
-  struct Node* next;
-} Node;
+// typedef struct Node {
+//   int x, y;
+//   struct Node* next;
+// } Node;
+
+typedef struct {
+  int x, y, direction;
+} Span;
 
 extern int **bitmap;
 
