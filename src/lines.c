@@ -138,7 +138,7 @@ void fill_shape(cairo_t *cr) {
   }
 
   // Complete the shape to the boundary
-  // complete_shape_to_boundary();
+  complete_shape_to_boundary();
 
   // Ensure the shape has at least 4 sides
   // if (shape_point_count < 4) {
@@ -159,46 +159,47 @@ void fill_shape(cairo_t *cr) {
   flood_fill((int)start.x, (int)start.y);
 
   // Convert the filled area to points
-  // Point *new_points = (Point *)malloc(width * height * sizeof(Point));
-  // if (!new_points) {
-  //   printf("Memory allocation failed for new_points\n");
-  //   return;
-  // }
-  // unsigned int new_point_count = 0;
-  // convert_filled_area_to_points(new_points, &new_point_count);
+  Point *new_points = (Point *)malloc((width * height) * 2 * sizeof(Point));
+  if (!new_points) {
+    printf("Memory allocation failed for new_points\n");
+    return;
+  }
+  unsigned int new_point_count = 0;
+  convert_filled_area_to_points(new_points, &new_point_count);
 
   // printf("New points count: %d\n", new_point_count);
   // for (unsigned int i = 0; i < new_point_count; i++) {
   //   printf("New point %d: (X: %d, Y: %d)\n", i, (int)new_points[i].x, (int)new_points[i].y); // Debug print
   // }
 
-  // if (new_point_count == 0) {
-  //   printf("No new points were filled.\n");
-  //   free(new_points);
-  //   shape_point_count = 0;
-  //   return;
-  // }
+  if (new_point_count == 0) {
+    printf("No new points were filled.\n");
+    free(new_points);
+    shape_point_count = 0;
+    return;
+  }
 
   // Store the filled shape
-  // add_filled_shape(new_points, new_point_count);
-  // free(new_points);
+  add_filled_shape(new_points, new_point_count);
+  free(new_points);
 
   // Reset the points after filling
-  // shape_point_count = 0;
-  // player_line_count = 0;
+  shape_point_count = 0;
+  player_line_count = 0;
 
-  // printf("Shape Points reset\n");
+  printf("Shape Points reset\n");
 }
 
 void draw_filled_shapes(cairo_t *cr) {
+  // TODO: This is not drawing what was stored.  Maybe just draw the points in the bitmap?
   for (size_t i = 0; i < filled_shape_count; i++) {
     // Draw the filled shape
     cairo_set_source_rgba(cr, colors[BLUE][0], colors[BLUE][1], colors[BLUE][2], 0.5); // Semi-transparent VGA blue color
     cairo_move_to(cr, filled_shapes[i].points[0].x, filled_shapes[i].points[0].y);
 
-    for (size_t j = 1; j < filled_shapes[i].point_count; j++) {
-      cairo_line_to(cr, filled_shapes[i].points[j].x, filled_shapes[i].points[j].y);
-    }
+    // for (size_t j = 1; j < filled_shapes[i].point_count; j++) {
+    //   cairo_line_to(cr, filled_shapes[i].points[j].x, filled_shapes[i].points[j].y);
+    // }
 
     cairo_close_path(cr);
     cairo_fill(cr);

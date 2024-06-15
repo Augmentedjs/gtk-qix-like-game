@@ -72,7 +72,7 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
   }
 
   // Draw the filled shapes
-  //draw_filled_shapes(cr);
+  draw_filled_shapes(cr);
 
   // Draw the trails first
   draw_trails(cr);
