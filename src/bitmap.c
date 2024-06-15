@@ -89,8 +89,9 @@ void flood_fill(const int x, const int y) {
     return;
   }
 
+  const int queue_size = (width * height) * 2 * sizeof(Point);
   // Create a queue for the flood fill
-  Point *queue = (Point *)malloc(width * height * sizeof(Point));
+  Point *queue = (Point *)malloc(queue_size);
   if (!queue) {
     fprintf(stderr, "Memory allocation failed for queue\n");
     exit(EXIT_FAILURE);
@@ -132,7 +133,7 @@ void flood_fill(const int x, const int y) {
     // Debugging output
     printf("Processing point: (X: %d, Y: %d), Queue start: %d, Queue end: %d\n", px, py, queue_start, queue_end);
 
-    if (queue_end >= width * height) {
+    if (queue_end >= queue_size) {
       //fprintf(stderr, "Queue overflow: queue_end (%d) exceeds maximum size (%d)\n", queue_end, width * height);
       break;
     }

@@ -149,7 +149,7 @@ void fill_shape(cairo_t *cr) {
   printf("Point Count - %d\n", shape_point_count);
 
   // Mark the walls in the bitmap (for fill)
-  //mark_walls(shape_points, shape_point_count);
+  mark_walls(shape_points, shape_point_count);
 
   // Find a starting point for flood fill inside the shape
   Point start = find_interior_point();
