@@ -3,6 +3,7 @@
 
 #include <cairo.h>
 #include "globals.h"
+#include "bitmap.h"
 #include <stdio.h> // Include for debug prints
 
 void add_player_point(const double x, const double y);
@@ -12,4 +13,5 @@ void fill_shape(cairo_t *cr);
 void add_filled_shape(const Point *points, const unsigned int point_count);
 void draw_filled_shapes(cairo_t *cr);
 double clamp(double value, double min, double max);
+
 #endif

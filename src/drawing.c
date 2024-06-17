@@ -1,13 +1,8 @@
 #include "includes/drawing.h"
-#include "includes/player.h"
-#include "includes/lines.h"
-#include "includes/qix_monster.h"
-#include "includes/globals.h"
-#include <stdio.h> // Include for debug prints
 
 // This is for drawing the screen and objects
 
-static void draw_background(cairo_t *cr, const int width, const int height) {
+static void draw_background(cairo_t *cr) {
   // Set the background color to black
   cairo_set_source_rgb(cr, colors[BLACK][0], colors[BLACK][1], colors[BLACK][2]);
   cairo_paint(cr);
@@ -19,7 +14,7 @@ static void draw_background(cairo_t *cr, const int width, const int height) {
   cairo_stroke(cr);
 }
 
-static void draw_text(cairo_t *cr, const int width, const int height) {
+static void draw_text(cairo_t *cr) {
   // Set the color for the text (dark gray)
   cairo_set_source_rgb(cr, colors[DARK_GRAY][0], colors[DARK_GRAY][1], colors[DARK_GRAY][2]);
   cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
@@ -38,11 +33,11 @@ static void draw_text(cairo_t *cr, const int width, const int height) {
   cairo_show_text(cr, "QIX");
 }
 
-void draw_QIX_line(cairo_t *cr, const double x1, const double y1, const double x2, const double y2, const double opacity, const double width, const int color_index) {
+void draw_QIX_line(cairo_t *cr, const double x1, const double y1, const double x2, const double y2, const double opacity, const double stroke, const int color_index) {
   // Set the color for the line
   cairo_set_source_rgba(cr, colors[color_index][0], colors[color_index][1], colors[color_index][2], opacity);
   // Set the line width
-  cairo_set_line_width(cr, width);
+  cairo_set_line_width(cr, stroke);
 
   // Move to the starting point of the line
   cairo_move_to(cr, x1, y1);
@@ -61,16 +56,18 @@ void draw_trails(cairo_t *cr) {
   }
 }
 
-void on_draw(GtkDrawingArea *area, cairo_t *cr, const int width, const int height, gpointer user_data) {
+void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
   // Draw the background and the white border
-  draw_background(cr, width, height);
+  draw_background(cr);
 
   // Draw the text
-  draw_text(cr, width, height);
+  draw_text(cr);
 
   // Fill the shape if drawing is complete
   if (drawing_complete) {
     fill_shape(cr);
+    // Print bitmap summary for debugging
+    print_bitmap_summary();
     drawing_complete = FALSE; // Reset the flag after filling
   }
 
@@ -96,7 +93,7 @@ double random_range(const int min, const int max) {
 }
 
 // Function to generate a random line within the specified constraints
-void generate_random_line(const int width, const int height, const int max_distance, Point* p1, Point* p2) {
+void generate_random_line(const int max_distance, Point* p1, Point* p2) {
   // Generate the first point randomly within the window bounds
   p1->x = random_range(0, width - 1);
   p1->y = random_range(0, height - 1);

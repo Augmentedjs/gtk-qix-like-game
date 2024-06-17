@@ -3,8 +3,8 @@
 Trail trails[TRAIL_MAX];
 unsigned int trail_count = 0;
 const double TRAIL_OFFSET = 15.0; // Increased offset for more spread-out trails
-int direction_change_interval = 75; // Interval for direction change
-int update_counter = 0;
+unsigned int direction_change_interval = 75; // Interval for direction change
+unsigned int update_counter = 0;
 double speed = 0;
 const double MAX_DISTANCE = 50;
 
@@ -23,14 +23,14 @@ void add_trail_point(const double x, const double y) {
   //printf("Trail Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
 }
 
-void initialize_positions_and_directions(const int width, const int height) {
+void initialize_positions_and_directions() {
   // Seed the random number generator
   srand(time(NULL));
 
   // Initialize line positions randomly within the window bounds
   Point p1, p2;
   // Generate a random line
-  generate_random_line(width, height, MAX_DISTANCE, &p1, &p2);
+  generate_random_line(MAX_DISTANCE, &p1, &p2);
   qix_line_x1 = p1.x;
   qix_line_y1 = p1.y;
   qix_line_x2 = p2.x;
@@ -50,7 +50,7 @@ void initialize_positions_and_directions(const int width, const int height) {
   }
 }
 
-void update_line_position(double *x, double *y, double *dx, double *dy, const int width, const int height, gboolean *bounced) {
+void update_line_position(double *x, double *y, double *dx, double *dy, gboolean *bounced) {
   *bounced = FALSE;
   *x += *dx;
   *y += *dy;
@@ -74,6 +74,9 @@ void update_line_position(double *x, double *y, double *dx, double *dy, const in
     *dy = -*dy;
     *bounced = TRUE;
   }
+
+  qix_monster_x = (int)((double)((*x + *dx) / 2));
+  qix_monster_y = (int)((double)((*x + *dx) / 2));
 }
 
 void randomize_direction_and_speed(double *dx, double *dy) {
@@ -84,15 +87,15 @@ void randomize_direction_and_speed(double *dx, double *dy) {
   *dy = sin(angle) * speed;
 
   direction_change_interval = (rand() % 50 + 50);
-  printf("direction_change_interval %d\n", direction_change_interval);
+  //printf("direction_change_interval %d\n", direction_change_interval);
 }
 
-void update_positions_and_trails(const int width, const int height) {
+void update_positions_and_trails() {
   gboolean bounced1 = FALSE, bounced2 = FALSE;
 
   // Update line position for both points
-  update_line_position(&qix_line_x1, &qix_line_y1, &dx1, &dy1, width, height, &bounced1);
-  update_line_position(&qix_line_x2, &qix_line_y2, &dx2, &dy2, width, height, &bounced2);
+  update_line_position(&qix_line_x1, &qix_line_y1, &dx1, &dy1, &bounced1);
+  update_line_position(&qix_line_x2, &qix_line_y2, &dx2, &dy2, &bounced2);
 
   // Increment the update counter
   update_counter++;

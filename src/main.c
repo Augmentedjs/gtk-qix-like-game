@@ -1,10 +1,4 @@
-#include <gtk/gtk.h>
-#include "includes/drawing.h"
-#include "includes/player.h"
-#include "includes/qix_monster.h"
-#include "includes/events.h"
-#include "includes/lines.h"
-#include "includes/globals.h"
+#include "includes/main.h"
 
 static void on_window_destroy(GtkWidget *widget, gpointer user_data) {
   app_running = FALSE;
@@ -20,9 +14,9 @@ static void activate(GtkApplication *app, gpointer user_data) {
   GtkEventController *controller;
 
   // Initialize random positions and directions
-  initialize_positions_and_directions(width, height);
+  initialize_positions_and_directions();
   // Initialize player position on the bottom border
-  initialize_player_position(width, height);
+  initialize_player_position();
 
   // Initialize player colors
   initialize_player_colors();
@@ -59,6 +53,8 @@ static void activate(GtkApplication *app, gpointer user_data) {
 }
 
 int main(int argc, char **argv) {
+  initialize_bitmap();
+    
   GtkApplication *app;
 
   // Create a new GTK application
@@ -70,6 +66,7 @@ int main(int argc, char **argv) {
 
   // Clean up
   g_object_unref(app);
+  free_bitmap();  // Free the dynamically allocated bitmap
 
   return status;
 }

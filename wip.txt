@@ -1,7 +1,7 @@
 Stuff to work on with QIX
 
 . Shapes only fill away from QIX location
-. Shapes should use area fill to close
+x Shapes should use area fill to close
 . Shapes should calculate area
 . Player should be able to move on borders of drawn shapes
 . Player doesn't look correct, should be a diamond shape

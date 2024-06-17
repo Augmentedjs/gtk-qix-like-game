@@ -90,6 +90,9 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
   if (!shift_pressed && was_shift_pressed) {
     // Shift key was released, set drawing_complete flag
     drawing_complete = TRUE;
+
+    // When drawing is complete, mark walls and add lines to the bitmap
+    mark_walls(shape_points, shape_point_count);
   }
 
   was_shift_pressed = shift_pressed;

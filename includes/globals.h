@@ -9,6 +9,8 @@
 #define MAX_SHAPES 100
 #define APPLICATION_NAME "com.augmentedjs.qixline"
 #define APPLICATION_TITLE "QIX Style Line Drawing with Trails"
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 
 extern int width;
 extern int height;
@@ -21,6 +23,9 @@ extern double dx1, dy1, dx2, dy2;
 extern double qix_line_x1, qix_line_y1, qix_line_x2, qix_line_y2;
 
 extern unsigned int qix_color_index;
+
+extern int qix_monster_x;
+extern int qix_monster_y;
 
 typedef struct {
   double x1, y1, x2, y2;
