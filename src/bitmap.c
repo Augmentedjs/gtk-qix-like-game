@@ -1,7 +1,4 @@
 #include "includes/bitmap.h"
-#include "includes/printer.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 int **bitmap;
 

@@ -2,6 +2,9 @@
 #define BITMAP_H
 
 #include "globals.h"
+#include "printer.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #define EMPTY 0
 #define WALL 1
