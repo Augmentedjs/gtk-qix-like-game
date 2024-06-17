@@ -8,11 +8,11 @@ void shrink_bitmap(int **original, int reduced[NEW_HEIGHT][NEW_WIDTH]) {
   const int x_ratio = width / NEW_WIDTH;
   const int y_ratio = height / NEW_HEIGHT;
 
-  for (int h = 0; h < NEW_HEIGHT; h++) {
-    for (int w = 0; w < NEW_WIDTH; w++) {
+  for (size_t h = 0; h < NEW_HEIGHT; h++) {
+    for (size_t w = 0; w < NEW_WIDTH; w++) {
       int sum = 0;
-      for (int y = 0; y < y_ratio; y++) {
-        for (int x = 0; x < x_ratio; x++) {
+      for (size_t y = 0; y < y_ratio; y++) {
+        for (size_t x = 0; x < x_ratio; x++) {
           sum += original[h * y_ratio + y][w * x_ratio + x];
         }
       }
@@ -25,9 +25,9 @@ void shrink_bitmap(int **original, int reduced[NEW_HEIGHT][NEW_WIDTH]) {
 // Function to print the reduced bitmap using different characters for different densities
 void print_bitmap(int reduced[NEW_HEIGHT][NEW_WIDTH], int x_ratio, int y_ratio) {
   printf("Printing bitmap\n");
-  for (int h = 0; h < NEW_HEIGHT; h++) {
-    for (int w = 0; w < NEW_WIDTH; w++) {
-      int sum = reduced[h][w];
+  for (size_t h = 0; h < NEW_HEIGHT; h++) {
+    for (size_t w = 0; w < NEW_WIDTH; w++) {
+      const int sum = reduced[h][w];
       int index = (sum * (sizeof(density_chars) - 2)) / (x_ratio * y_ratio * 2);
       if (index < 0)
         index = 0;
@@ -42,8 +42,8 @@ void print_bitmap(int reduced[NEW_HEIGHT][NEW_WIDTH], int x_ratio, int y_ratio) 
 int reduce_and_print_bitmap(int **bitmap) {
   printf("Reducing and printing bitmap\n");
   int reduced[NEW_HEIGHT][NEW_WIDTH];
-  for (int i = 0; i < NEW_HEIGHT; i++) {
-    for (int j = 0; j < NEW_WIDTH; j++) {
+  for (size_t i = 0; i < NEW_HEIGHT; i++) {
+    for (size_t j = 0; j < NEW_WIDTH; j++) {
       reduced[i][j] = 0;
     }
   }

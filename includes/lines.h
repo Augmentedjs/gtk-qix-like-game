@@ -8,10 +8,9 @@
 
 void add_player_point(const double x, const double y);
 void add_player_line(const double x1, const double y1, const double x2, const double y2);
-void draw_player_lines(cairo_t *cr);
-void fill_shape(cairo_t *cr);
 void add_filled_shape(const Point *points, const unsigned int point_count);
-void draw_filled_shapes(cairo_t *cr);
-double clamp(double value, double min, double max);
+double clamp(const double value, const double min, const double max) ;
+void complete_shape_to_boundary();
+Point find_interior_point();
 
 #endif

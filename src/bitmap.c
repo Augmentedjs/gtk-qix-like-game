@@ -8,13 +8,13 @@ void initialize_bitmap() {
     printf("Memory allocation failed for bitmap rows\n");
     return;
   }
-  for (int y = 0; y < height; y++) {
+  for (size_t y = 0; y < height; y++) {
     bitmap[y] = (int *)malloc(width * sizeof(int));
     if (!bitmap[y]) {
       printf("Memory allocation failed for bitmap columns at row %d\n", y);
       return;
     }
-    for (int x = 0; x < width; x++) {
+    for (size_t x = 0; x < width; x++) {
       bitmap[y][x] = EMPTY;
     }
   }
@@ -22,14 +22,14 @@ void initialize_bitmap() {
 
 void free_bitmap() {
   if (bitmap) {
-    for (int y = 0; y < height; y++) {
+    for (size_t y = 0; y < height; y++) {
       free(bitmap[y]);
     }
     free(bitmap);
   }
 }
 
-void draw_line(int x1, int y1, int x2, int y2) {
+void draw_line(int x1, int y1, const int x2, const int y2) {
   int dx = abs(x2 - x1);
   int dy = abs(y2 - y1);
   int sx = x1 < x2 ? 1 : -1;
@@ -55,19 +55,19 @@ void draw_line(int x1, int y1, int x2, int y2) {
   }
 }
 
-void mark_walls(const Point *points, const unsigned int point_count) {
+void mark_walls(Point *points, const unsigned int point_count) {
   printf("Mark walls %d\n", point_count);
   for (size_t i = 0; i < point_count - 1; i++) {
     draw_line((int)points[i].x, (int)points[i].y, (int)points[i + 1].x, (int)points[i + 1].y);
   }
   // Draw line from the last point to the first to close the shape
-  // draw_line((int)points[point_count - 1].x, (int)points[point_count - 1].y, (int)points[0].x, (int)points[0].y);
+  //draw_line((int)points[point_count - 1].x, (int)points[point_count - 1].y, (int)points[0].x, (int)points[0].y);
 }
 
 void convert_filled_area_to_points(Point *filled_points, unsigned int *point_count) {
   *point_count = 0;
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
+  for (size_t y = 0; y < height; y++) {
+    for (size_t x = 0; x < width; x++) {
       if (bitmap[y][x] == FILLED) {
         filled_points[(*point_count)++] = (Point){x, y};
       }
@@ -100,9 +100,9 @@ void flood_fill(const int x, const int y) {
   printf("Initial point enqueued\n");
 
   while (queue_start < queue_end) {
-    Point p = queue[queue_start++];
-    int px = p.x;
-    int py = p.y;
+    const Point p = queue[queue_start++];
+    const int px = p.x;
+    const int py = p.y;
 
     // Boundary checks
     if (px < 0 || px >= width || py < 0 || py >= height) {
@@ -131,7 +131,7 @@ void flood_fill(const int x, const int y) {
     printf("Processing point: (X: %d, Y: %d), Queue start: %d, Queue end: %d\n", px, py, queue_start, queue_end);
 
     if (queue_end >= queue_size) {
-      //fprintf(stderr, "Queue overflow: queue_end (%d) exceeds maximum size (%d)\n", queue_end, width * height);
+      fprintf(stderr, "Queue overflow: queue_end (%d) exceeds maximum size (%d)\n", queue_end, width * height);
       break;
     }
   }
