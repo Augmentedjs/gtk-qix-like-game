@@ -4,16 +4,17 @@
 
 static void draw_background(cairo_t *cr) {
   // Set the background color to black
-  cairo_set_source_rgb(cr, colors[BLACK][0], colors[BLACK][1], colors[BLACK][2]);
+  cairo_set_source_rgb(cr, colors[BACKGROUND_COLOR][0], colors[BACKGROUND_COLOR][1], colors[BACKGROUND_COLOR][2]);
   cairo_paint(cr);
 
   // Draw the white border using VGA white color
-  cairo_set_source_rgb(cr, colors[WHITE][0], colors[WHITE][1], colors[WHITE][2]);
+  cairo_set_source_rgb(cr, colors[PLAYFIELD_BORDER_COLOR][0], colors[PLAYFIELD_BORDER_COLOR][1], colors[PLAYFIELD_BORDER_COLOR][2]);
   cairo_set_line_width(cr, 2.0);
   cairo_rectangle(cr, 0.0, 0.0, width, height);
   cairo_stroke(cr);
 }
 
+/* TODO: This will become the title area for score, etc. */
 static void draw_text(cairo_t *cr) {
   // Set the color for the text (dark gray)
   cairo_set_source_rgb(cr, colors[DARK_GRAY][0], colors[DARK_GRAY][1], colors[DARK_GRAY][2]);
@@ -56,6 +57,128 @@ void draw_trails(cairo_t *cr) {
   }
 }
 
+void draw_player(cairo_t *cr) {
+  // Draw the player as a cloud of dots
+  for (size_t i = 0; i < PLAYER_DOT_COUNT; i++) {
+    const double angle = 2 * M_PI * i / PLAYER_DOT_COUNT;
+    const double radius = 5 + 3 * (i % 4);
+    const double dot_x = player_x + radius * cos(angle);
+    const double dot_y = player_y + radius * sin(angle);
+    const int index = i % 4;
+
+    // Set the color for the dot
+    cairo_set_source_rgb(cr, player_colors[index][0], player_colors[index][1], player_colors[index][2]);
+    cairo_arc(cr, dot_x, dot_y, 2, 0, 2 * M_PI);
+    cairo_fill(cr);
+  }
+}
+
+void fill_shape(cairo_t *cr) {
+  if (shape_point_count < 2) {
+    return;
+  }
+  printf("Fill shape - %d\n", shape_point_count);
+  if (shape_point_count < 3) {
+    printf("Fill shape too small - %d\n", shape_point_count);
+    return; // Not enough points to form a shape
+  }
+
+  // Complete the shape to the boundary
+  complete_shape_to_boundary();
+
+  // Ensure the shape has at least 4 sides
+  // if (shape_point_count < 4) {
+  //   printf("Still fill shape too small - %d\n", shape_point_count);
+  //   return;
+  // }
+
+  printf("Point Count - %d\n", shape_point_count);
+
+  // Mark the walls in the bitmap (for fill)
+  mark_walls(shape_points, shape_point_count);
+
+  // Find a starting point for flood fill inside the shape
+  const Point start = find_interior_point();
+  printf("Starting flood fill at: (X: %d, Y: %d)\n", (int)start.x, (int)start.y); // Debug print
+
+  // Perform flood fill
+  flood_fill((int)start.x, (int)start.y);
+
+  // Convert the filled area to points
+  Point *new_points = (Point *)malloc((width * height) * 2 * sizeof(Point));
+  if (!new_points) {
+    printf("Memory allocation failed for new_points\n");
+    return;
+  }
+  unsigned int new_point_count = 0;
+  convert_filled_area_to_points(new_points, &new_point_count);
+
+  // printf("New points count: %d\n", new_point_count);
+  // for (unsigned int i = 0; i < new_point_count; i++) {
+  //   printf("New point %d: (X: %d, Y: %d)\n", i, (int)new_points[i].x, (int)new_points[i].y); // Debug print
+  // }
+
+  if (new_point_count == 0) {
+    printf("No new points were filled.\n");
+    free(new_points);
+    shape_point_count = 0;
+    return;
+  }
+
+  // Store the filled shape
+  add_filled_shape(new_points, new_point_count);
+  free(new_points);
+
+  // Reset the points after filling
+  shape_point_count = 0;
+  player_line_count = 0;
+
+  printf("Shape Points reset\n");
+}
+
+void draw_player_lines(cairo_t *cr) {
+  cairo_set_source_rgb(cr, colors[FAST_LINE_COLOR][0], colors[FAST_LINE_COLOR][1], colors[FAST_LINE_COLOR][2]);
+  // cairo_set_source_rgb(cr, colors[LIGHT_BLUE][0], colors[LIGHT_BLUE][1], colors[LIGHT_BLUE][2]);
+  cairo_set_line_width(cr, 2.0);
+  for (size_t i = 0; i < player_line_count; i++) {
+    cairo_move_to(cr, player_lines[i].x1, player_lines[i].y1);
+    cairo_line_to(cr, player_lines[i].x2, player_lines[i].y2);
+    cairo_stroke(cr);
+  }
+}
+
+void draw_filled_shapes(cairo_t *cr) {
+  // TODO: This is not drawing what was stored.  Maybe just draw the points in the bitmap?
+  for (size_t i = 0; i < filled_shape_count; i++) {
+    // Draw the filled shape
+
+    cairo_set_source_rgba(cr, colors[FAST_FILL_COLOR][0], colors[FAST_FILL_COLOR][1], colors[FAST_FILL_COLOR][2], 1);
+    // cairo_set_source_rgba(cr, colors[BLUE][0], colors[BLUE][1], colors[BLUE][2], 0.5);
+    cairo_move_to(cr, filled_shapes[i].points[0].x, filled_shapes[i].points[0].y);
+
+    // for (size_t j = 1; j < filled_shapes[i].point_count; j++) {
+    //   cairo_line_to(cr, filled_shapes[i].points[j].x, filled_shapes[i].points[j].y);
+    // }
+
+    cairo_close_path(cr);
+    cairo_fill(cr);
+
+    // Draw the border
+    cairo_set_source_rgb(cr, colors[FAST_LINE_COLOR][0], colors[FAST_LINE_COLOR][1], colors[LIGHT_CYAN][2]);
+    // cairo_set_source_rgb(cr, colors[LIGHT_CYAN][0], colors[LIGHT_CYAN][1], colors[LIGHT_CYAN][2]);
+    cairo_set_line_width(cr, 2.0);
+
+    cairo_move_to(cr, filled_shapes[i].points[0].x, filled_shapes[i].points[0].y);
+
+    for (size_t j = 1; j < filled_shapes[i].point_count; j++) {
+      cairo_line_to(cr, filled_shapes[i].points[j].x, filled_shapes[i].points[j].y);
+    }
+
+    cairo_close_path(cr);
+    cairo_stroke(cr);
+  }
+}
+
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
   // Draw the background and the white border
   draw_background(cr);
@@ -85,26 +208,4 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
 
   // Draw the player
   draw_player(cr);
-}
-
-// Function to generate a random number between min and max (inclusive)
-double random_range(const int min, const int max) {
-  return (double) (min + rand() % (max - min + 1));
-}
-
-// Function to generate a random line within the specified constraints
-void generate_random_line(const int max_distance, Point* p1, Point* p2) {
-  // Generate the first point randomly within the window bounds
-  p1->x = random_range(0, width - 1);
-  p1->y = random_range(0, height - 1);
-
-  // Calculate the range for the second point
-  double min_x2 = clamp(p1->x - max_distance, 0, width - 1);
-  double max_x2 = clamp(p1->x + max_distance, 0, width - 1);
-  double min_y2 = clamp(p1->y - max_distance, 0, height - 1);
-  double max_y2 = clamp(p1->y + max_distance, 0, height - 1);
-
-  // Generate the second point within the specified range
-  p2->x = random_range(min_x2, max_x2);
-  p2->y = random_range(min_y2, max_y2);
 }

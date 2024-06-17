@@ -8,6 +8,28 @@ unsigned int update_counter = 0;
 double speed = 0;
 const double MAX_DISTANCE = 50;
 
+// Function to generate a random number between min and max (inclusive)
+double random_range(const int min, const int max) {
+  return (double) (min + rand() % (max - min + 1));
+}
+
+// Function to generate a random line within the specified constraints
+void generate_random_line(const int max_distance, Point* p1, Point* p2) {
+  // Generate the first point randomly within the window bounds
+  p1->x = random_range(0, width - 1);
+  p1->y = random_range(0, height - 1);
+
+  // Calculate the range for the second point
+  const double min_x2 = clamp(p1->x - max_distance, 0, width - 1);
+  const double max_x2 = clamp(p1->x + max_distance, 0, width - 1);
+  const double min_y2 = clamp(p1->y - max_distance, 0, height - 1);
+  const double max_y2 = clamp(p1->y + max_distance, 0, height - 1);
+
+  // Generate the second point within the specified range
+  p2->x = random_range(min_x2, max_x2);
+  p2->y = random_range(min_y2, max_y2);
+}
+
 void add_trail_point(const double x, const double y) {
   if (trail_count >= TRAIL_MAX) {
     // Handle max trail points
