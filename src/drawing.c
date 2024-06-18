@@ -14,6 +14,13 @@ static void draw_background(cairo_t *cr) {
   cairo_stroke(cr);
 }
 
+static void draw_border(cairo_t *cr) {
+  cairo_set_source_rgb(cr, colors[PLAYFIELD_BORDER_COLOR][0], colors[PLAYFIELD_BORDER_COLOR][1], colors[PLAYFIELD_BORDER_COLOR][2]);
+  cairo_set_line_width(cr, 2.0);
+  cairo_rectangle(cr, 0.0, 0.0, width, height);
+  cairo_stroke(cr);
+}
+
 /* TODO: This will become the title area for score, etc. */
 static void draw_text(cairo_t *cr) {
   // Set the color for the text (dark gray)
@@ -73,6 +80,37 @@ void draw_player(cairo_t *cr) {
   }
 }
 
+// Function to draw points from a bitmap
+void draw_bitmap(cairo_t *cr, int **bitmap) {
+  for (size_t y = 0; y < height; y++) {
+    size_t x = 0;
+    while (x < width) {
+      int pixel = bitmap[y][x];
+      if (pixel != EMPTY) {
+        // Find the length of the continuous segment of the same pixel type
+        size_t segment_length = 1;
+        while ((x + segment_length < width) && (bitmap[y][x + segment_length] == pixel)) {
+          segment_length++;
+        }
+
+        if (pixel == WALL) {
+          cairo_set_source_rgb(cr, colors[FAST_LINE_COLOR][0], colors[FAST_LINE_COLOR][1], colors[FAST_LINE_COLOR][2]);
+          cairo_set_source_rgb(cr, colors[FAST_FILL_COLOR][0], colors[FAST_FILL_COLOR][1], colors[FAST_FILL_COLOR][2]);
+        }
+
+        cairo_rectangle(cr, x, y, segment_length, 1);
+        cairo_fill(cr);
+
+        // Move x to the end of the current segment
+        x += segment_length;
+      } else {
+        // Skip clear areas
+        x++;
+      }
+    }
+  }
+}
+
 void fill_shape(cairo_t *cr) {
   if (shape_point_count < 2) {
     return;
@@ -84,7 +122,7 @@ void fill_shape(cairo_t *cr) {
   }
 
   // Complete the shape to the boundary
-  complete_shape_to_boundary();
+  // complete_shape_to_boundary();
 
   // Ensure the shape has at least 4 sides
   // if (shape_point_count < 4) {
@@ -103,6 +141,8 @@ void fill_shape(cairo_t *cr) {
 
   // Perform flood fill
   flood_fill((int)start.x, (int)start.y);
+
+  /* New draw routine
 
   // Convert the filled area to points
   Point *new_points = (Point *)malloc((width * height) * 2 * sizeof(Point));
@@ -129,11 +169,13 @@ void fill_shape(cairo_t *cr) {
   add_filled_shape(new_points, new_point_count);
   free(new_points);
 
-  // Reset the points after filling
-  shape_point_count = 0;
-  player_line_count = 0;
+  */
 
-  printf("Shape Points reset\n");
+  // Reset the points after filling
+  // shape_point_count = 0;
+  // player_line_count = 0;
+
+  // printf("Shape Points reset\n");
 }
 
 void draw_player_lines(cairo_t *cr) {
@@ -180,10 +222,10 @@ void draw_filled_shapes(cairo_t *cr) {
 }
 
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
-  // Draw the background and the white border
+  // Draw the background
   draw_background(cr);
 
-  // Draw the text
+  // Draw the text (will be a title area)
   draw_text(cr);
 
   // Fill the shape if drawing is complete
@@ -195,7 +237,9 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
   }
 
   // Draw the filled shapes
-  draw_filled_shapes(cr);
+  // draw_filled_shapes(cr);
+
+  draw_bitmap(cr, bitmap);
 
   // Draw the trails first
   draw_trails(cr);
@@ -205,6 +249,9 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
 
   // Draw player-drawn lines
   draw_player_lines(cr);
+
+  // Draw the white border
+  draw_border(cr);
 
   // Draw the player
   draw_player(cr);

@@ -7,6 +7,7 @@
 #include "lines.h"
 #include "player.h"
 #include "qix_monster.h"
+#include "bitmap.h"
 #include <stdio.h> // Include for debug prints
 
 void draw_QIX_line(cairo_t *cr, const double x1, const double y1, const double x2, const double y2, const double opacity, const double stroke, const int color_index);
@@ -19,5 +20,6 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
 
 static void draw_text(cairo_t *cr);
 static void draw_background(cairo_t *cr);
+static void draw_border(cairo_t *cr);
 
 #endif
