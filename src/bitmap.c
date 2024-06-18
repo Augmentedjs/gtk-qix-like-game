@@ -8,13 +8,13 @@ void initialize_bitmap() {
     printf("Memory allocation failed for bitmap rows\n");
     return;
   }
-  for (size_t y = 0; y < height; y++) {
+  for (size_t y = 0; y < (size_t)height; y++) {
     bitmap[y] = (int *)malloc(width * sizeof(int));
     if (!bitmap[y]) {
-      printf("Memory allocation failed for bitmap columns at row %d\n", y);
+      printf("Memory allocation failed for bitmap columns at row %zu\n", y);  // Corrected format specifier
       return;
     }
-    for (size_t x = 0; x < width; x++) {
+    for (size_t x = 0; x < (size_t)width; x++) {
       bitmap[y][x] = EMPTY;
     }
   }
@@ -22,7 +22,7 @@ void initialize_bitmap() {
 
 void free_bitmap() {
   if (bitmap) {
-    for (size_t y = 0; y < height; y++) {
+    for (size_t y = 0; y < (size_t)height; y++) {
       free(bitmap[y]);
     }
     free(bitmap);
@@ -56,7 +56,7 @@ void draw_line(int x1, int y1, const int x2, const int y2) {
 }
 
 void mark_walls(Point *points, const unsigned int point_count) {
-  printf("Mark walls %d\n", point_count);
+  printf("Mark walls %u\n", point_count);  // Corrected format specifier
   for (size_t i = 0; i < point_count - 1; i++) {
     draw_line((int)points[i].x, (int)points[i].y, (int)points[i + 1].x, (int)points[i + 1].y);
   }
@@ -66,8 +66,8 @@ void mark_walls(Point *points, const unsigned int point_count) {
 
 void convert_filled_area_to_points(Point *filled_points, unsigned int *point_count) {
   *point_count = 0;
-  for (size_t y = 0; y < height; y++) {
-    for (size_t x = 0; x < width; x++) {
+  for (size_t y = 0; y < (size_t)height; y++) {
+    for (size_t x = 0; x < (size_t)width; x++) {
       if (bitmap[y][x] == FILLED) {
         filled_points[(*point_count)++] = (Point){x, y};
       }

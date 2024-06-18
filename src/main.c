@@ -1,6 +1,8 @@
 #include "includes/main.h"
 
 static void on_window_destroy(GtkWidget *widget, gpointer user_data) {
+  (void)widget;   // Mark widget as unused
+  (void)user_data; // Mark user_data as unused
   app_running = FALSE;
   if (timeout_id > 0) {
     g_source_remove(timeout_id);
@@ -9,6 +11,7 @@ static void on_window_destroy(GtkWidget *widget, gpointer user_data) {
 }
 
 static void activate(GtkApplication *app, gpointer user_data) {
+  (void)user_data; // Mark user_data as unused
   GtkWidget *window;
   GtkWidget *drawing_area;
   GtkEventController *controller;
