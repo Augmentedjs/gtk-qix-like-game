@@ -189,38 +189,6 @@ void draw_player_lines(cairo_t *cr) {
   }
 }
 
-void draw_filled_shapes(cairo_t *cr) {
-  // TODO: This is not drawing what was stored.  Maybe just draw the points in the bitmap?
-  for (size_t i = 0; i < filled_shape_count; i++) {
-    // Draw the filled shape
-
-    cairo_set_source_rgba(cr, colors[FAST_FILL_COLOR][0], colors[FAST_FILL_COLOR][1], colors[FAST_FILL_COLOR][2], 1);
-    // cairo_set_source_rgba(cr, colors[BLUE][0], colors[BLUE][1], colors[BLUE][2], 0.5);
-    cairo_move_to(cr, filled_shapes[i].points[0].x, filled_shapes[i].points[0].y);
-
-    // for (size_t j = 1; j < filled_shapes[i].point_count; j++) {
-    //   cairo_line_to(cr, filled_shapes[i].points[j].x, filled_shapes[i].points[j].y);
-    // }
-
-    cairo_close_path(cr);
-    cairo_fill(cr);
-
-    // Draw the border
-    cairo_set_source_rgb(cr, colors[FAST_LINE_COLOR][0], colors[FAST_LINE_COLOR][1], colors[LIGHT_CYAN][2]);
-    // cairo_set_source_rgb(cr, colors[LIGHT_CYAN][0], colors[LIGHT_CYAN][1], colors[LIGHT_CYAN][2]);
-    cairo_set_line_width(cr, 2.0);
-
-    cairo_move_to(cr, filled_shapes[i].points[0].x, filled_shapes[i].points[0].y);
-
-    for (size_t j = 1; j < filled_shapes[i].point_count; j++) {
-      cairo_line_to(cr, filled_shapes[i].points[j].x, filled_shapes[i].points[j].y);
-    }
-
-    cairo_close_path(cr);
-    cairo_stroke(cr);
-  }
-}
-
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
   // Draw the background
   draw_background(cr);
@@ -235,9 +203,6 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
     print_bitmap_summary();
     drawing_complete = FALSE; // Reset the flag after filling
   }
-
-  // Draw the filled shapes
-  // draw_filled_shapes(cr);
 
   draw_bitmap(cr, bitmap);
 
