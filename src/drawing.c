@@ -2,7 +2,7 @@
 
 // This is for drawing the screen and objects
 
-static void draw_background(cairo_t *cr) {
+void draw_background(cairo_t *cr) {
   // Set the background color to black
   cairo_set_source_rgb(cr, colors[BACKGROUND_COLOR][0], colors[BACKGROUND_COLOR][1], colors[BACKGROUND_COLOR][2]);
   cairo_paint(cr);
@@ -14,7 +14,7 @@ static void draw_background(cairo_t *cr) {
   cairo_stroke(cr);
 }
 
-static void draw_border(cairo_t *cr) {
+void draw_border(cairo_t *cr) {
   cairo_set_source_rgb(cr, colors[PLAYFIELD_BORDER_COLOR][0], colors[PLAYFIELD_BORDER_COLOR][1], colors[PLAYFIELD_BORDER_COLOR][2]);
   cairo_set_line_width(cr, 2.0);
   cairo_rectangle(cr, 0.0, 0.0, width, height);
@@ -22,7 +22,7 @@ static void draw_border(cairo_t *cr) {
 }
 
 /* TODO: This will become the title area for score, etc. */
-static void draw_text(cairo_t *cr) {
+void draw_text(cairo_t *cr) {
   // Set the color for the text (dark gray)
   cairo_set_source_rgb(cr, colors[DARK_GRAY][0], colors[DARK_GRAY][1], colors[DARK_GRAY][2]);
   cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
@@ -82,19 +82,19 @@ void draw_player(cairo_t *cr) {
 
 // Function to draw points from a bitmap
 void draw_bitmap(cairo_t *cr, int **bitmap) {
-  for (size_t y = 0; y < height; y++) {
+  for (size_t y = 0; y < (size_t)height; y++) {
     size_t x = 0;
-    while (x < width) {
+    while (x < (size_t)width) {
       int pixel = bitmap[y][x];
       if (pixel != EMPTY) {
         // Find the length of the continuous segment of the same pixel type
         size_t segment_length = 1;
-        while ((x + segment_length < width) && (bitmap[y][x + segment_length] == pixel)) {
+        while ((x + segment_length < (size_t)width) && (bitmap[y][x + segment_length] == pixel)) {
           segment_length++;
         }
 
         if (pixel == WALL) {
-          cairo_set_source_rgb(cr, colors[FAST_LINE_COLOR][0], colors[FAST_LINE_COLOR][1], colors[FAST_LINE_COLOR][2]);
+          cairo_set_source_rgb(cr, colors[FAST_FILL_BORDER_COLOR][0], colors[FAST_FILL_BORDER_COLOR][1], colors[FAST_FILL_BORDER_COLOR][2]);
           cairo_set_source_rgb(cr, colors[FAST_FILL_COLOR][0], colors[FAST_FILL_COLOR][1], colors[FAST_FILL_COLOR][2]);
         }
 
@@ -112,6 +112,7 @@ void draw_bitmap(cairo_t *cr, int **bitmap) {
 }
 
 void fill_shape(cairo_t *cr) {
+  (void)cr;  // Mark cr as unused
   if (shape_point_count < 2) {
     return;
   }
@@ -142,35 +143,6 @@ void fill_shape(cairo_t *cr) {
   // Perform flood fill
   flood_fill((int)start.x, (int)start.y);
 
-  /* New draw routine
-
-  // Convert the filled area to points
-  Point *new_points = (Point *)malloc((width * height) * 2 * sizeof(Point));
-  if (!new_points) {
-    printf("Memory allocation failed for new_points\n");
-    return;
-  }
-  unsigned int new_point_count = 0;
-  convert_filled_area_to_points(new_points, &new_point_count);
-
-  // printf("New points count: %d\n", new_point_count);
-  // for (unsigned int i = 0; i < new_point_count; i++) {
-  //   printf("New point %d: (X: %d, Y: %d)\n", i, (int)new_points[i].x, (int)new_points[i].y); // Debug print
-  // }
-
-  if (new_point_count == 0) {
-    printf("No new points were filled.\n");
-    free(new_points);
-    shape_point_count = 0;
-    return;
-  }
-
-  // Store the filled shape
-  add_filled_shape(new_points, new_point_count);
-  free(new_points);
-
-  */
-
   // Reset the points after filling
   // shape_point_count = 0;
   // player_line_count = 0;
@@ -180,7 +152,6 @@ void fill_shape(cairo_t *cr) {
 
 void draw_player_lines(cairo_t *cr) {
   cairo_set_source_rgb(cr, colors[FAST_LINE_COLOR][0], colors[FAST_LINE_COLOR][1], colors[FAST_LINE_COLOR][2]);
-  // cairo_set_source_rgb(cr, colors[LIGHT_BLUE][0], colors[LIGHT_BLUE][1], colors[LIGHT_BLUE][2]);
   cairo_set_line_width(cr, 2.0);
   for (size_t i = 0; i < player_line_count; i++) {
     cairo_move_to(cr, player_lines[i].x1, player_lines[i].y1);
@@ -190,6 +161,11 @@ void draw_player_lines(cairo_t *cr) {
 }
 
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
+  (void)area;      // Mark area as unused
+  (void)width;     // Mark width as unused
+  (void)height;    // Mark height as unused
+  (void)user_data; // Mark user_data as unused
+
   // Draw the background
   draw_background(cr);
 
@@ -212,8 +188,10 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
   // Draw the current line
   draw_QIX_line(cr, qix_line_x1, qix_line_y1, qix_line_x2, qix_line_y2, 1.0, 2.0, qix_color_index);
 
-  // Draw player-drawn lines
-  draw_player_lines(cr);
+  if (!drawing_complete) {
+    // Draw player-drawn lines
+    draw_player_lines(cr);
+  }
 
   // Draw the white border
   draw_border(cr);

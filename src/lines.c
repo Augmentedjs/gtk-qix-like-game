@@ -96,7 +96,7 @@ double clamp(const double value, const double min, const double max) {
 
 Point find_interior_point() {
   Point centroid = {0, 0};
-  for (int i = 0; i < shape_point_count; i++) {
+  for (size_t i = 0; i < shape_point_count; i++) {
     centroid.x += shape_points[i].x;
     centroid.y += shape_points[i].y;
   }

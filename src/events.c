@@ -18,6 +18,8 @@ gboolean on_timeout(gpointer user_data) {
 }
 
 gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data) {
+  (void)controller; // Mark controller as unused
+  (void)keycode;    // Mark keycode as unused
   gboolean shift_pressed = state & GDK_SHIFT_MASK;
   static gboolean was_shift_pressed = FALSE;
 

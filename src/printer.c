@@ -11,8 +11,8 @@ void shrink_bitmap(int **original, int reduced[NEW_HEIGHT][NEW_WIDTH]) {
   for (size_t h = 0; h < NEW_HEIGHT; h++) {
     for (size_t w = 0; w < NEW_WIDTH; w++) {
       int sum = 0;
-      for (size_t y = 0; y < y_ratio; y++) {
-        for (size_t x = 0; x < x_ratio; x++) {
+      for (int y = 0; y < y_ratio; y++) {
+        for (int x = 0; x < x_ratio; x++) {
           sum += original[h * y_ratio + y][w * x_ratio + x];
         }
       }
@@ -31,8 +31,8 @@ void print_bitmap(int reduced[NEW_HEIGHT][NEW_WIDTH], int x_ratio, int y_ratio) 
       int index = (sum * (sizeof(density_chars) - 2)) / (x_ratio * y_ratio * 2);
       if (index < 0)
         index = 0;
-      if (index >= (sizeof(density_chars) - 1))
-        index = sizeof(density_chars) - 2;
+      if (index >= (int)(sizeof(density_chars) - 1)) // Cast to int
+        index = (int)(sizeof(density_chars) - 2); // Cast to int
       printf("%c", density_chars[index]);
     }
     printf("\n");
