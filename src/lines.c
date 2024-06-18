@@ -10,30 +10,6 @@ void add_player_line(const double x1, const double y1, const double x2, const do
   }
 }
 
-void add_filled_shape(const Point *points, const unsigned int point_count) {
-  if (filled_shape_count < MAX_SHAPES) {
-    filled_shapes[filled_shape_count].point_count = point_count;
-    int min_x = points[0].x, min_y = points[0].y;
-    int max_x = points[0].x, max_y = points[0].y;
-    for (size_t i = 0; i < point_count; i++) {
-      filled_shapes[filled_shape_count].points[i] = points[i];
-      if (points[i].x < min_x)
-        min_x = points[i].x;
-      if (points[i].y < min_y)
-        min_y = points[i].y;
-      if (points[i].x > max_x)
-        max_x = points[i].x;
-      if (points[i].y > max_y)
-        max_y = points[i].y;
-    }
-    filled_shapes[filled_shape_count].min_x = min_x;
-    filled_shapes[filled_shape_count].min_y = min_y;
-    filled_shapes[filled_shape_count].max_x = max_x;
-    filled_shapes[filled_shape_count].max_y = max_y;
-    filled_shape_count++;
-  }
-}
-
 void add_player_point(const double x, const double y) {
   if (shape_point_count > 0 &&
       shape_points[shape_point_count - 1].x == x &&
@@ -90,29 +66,73 @@ void complete_shape_to_boundary() {
   printf("Completed shape to boundary - (%0.f, %0.f)\n", last_point.x, last_point.y);
 }
 
-double clamp(const double value, const double min, const double max) {
-  return value < min ? min : (value > max ? max : value);
+int is_point_inside_shape(const Point point) {
+  int count = 0;
+  for (size_t i = 0; i < shape_point_count; i++) {
+    const Point p1 = shape_points[i];
+    const Point p2 = shape_points[(i + 1) % shape_point_count];
+
+    if (((p1.y > point.y) != (p2.y > point.y)) &&
+        (point.x < (p2.x - p1.x) * (point.y - p1.y) / (p2.y - p1.y) + p1.x)) {
+      count++;
+    }
+  }
+  return count % 2;
+}
+
+double distance(const Point a, const Point b) {
+  return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
+
+double shape_perimeter() {
+  double perimeter = 0;
+  for (size_t i = 0; i < shape_point_count; i++) {
+    const Point p1 = shape_points[i];
+    const Point p2 = shape_points[(i + 1) % shape_point_count];
+    perimeter += distance(p1, p2);
+  }
+  return perimeter;
 }
 
 Point find_interior_point() {
+  printf("find_interior_point - %u\n", shape_point_count);
+
   Point centroid = {0, 0};
   for (size_t i = 0; i < shape_point_count; i++) {
+    printf("  Shape Point %.0f, %.0f\n", shape_points[i].x, shape_points[i].y);
     centroid.x += shape_points[i].x;
     centroid.y += shape_points[i].y;
   }
   centroid.x /= shape_point_count;
   centroid.y /= shape_point_count;
 
-  // Calculate the direction away from the QIX Monster
-  double dx = centroid.x - qix_monster_x;
-  double dy = centroid.y - qix_monster_y;
-  const double length = sqrt(dx * dx + dy * dy);
-  dx /= length;
-  dy /= length;
+  // Determine number of candidates based on shape perimeter
+  const double perimeter = shape_perimeter();
+  unsigned int num_candidates = (unsigned int)(perimeter / 10); // Adjust the divisor as needed
+  if (num_candidates < 10)
+    num_candidates = 10; // Ensure a minimum number of candidates
 
-  // Move the starting point slightly away from the QIX Monster
-  centroid.x += dx;
-  centroid.y += dy;
+  Point candidates[num_candidates];
+  for (size_t i = 0; i < num_candidates; i++) {
+    candidates[i].x = centroid.x + (rand() % 20 - 10);
+    candidates[i].y = centroid.y + (rand() % 20 - 10);
+  }
 
-  return centroid;
+  const Point qix_monster = {qix_monster_x, qix_monster_y};
+  Point best_point = centroid;
+  double max_distance = 0;
+
+  for (size_t i = 0; i < num_candidates; i++) {
+    if (is_point_inside_shape(candidates[i])) {
+      const double dist = distance(candidates[i], qix_monster);
+      if (dist > max_distance) {
+        max_distance = dist;
+        best_point = candidates[i];
+      }
+    }
+  }
+
+  printf("  QIX Monster %d, %d - Best Point %.0f, %.0f\n", qix_monster_x, qix_monster_y, best_point.x, best_point.y);
+
+  return best_point;
 }
