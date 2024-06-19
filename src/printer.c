@@ -31,8 +31,8 @@ void print_bitmap(int reduced[NEW_HEIGHT][NEW_WIDTH], int x_ratio, int y_ratio) 
       int index = (sum * (sizeof(density_chars) - 2)) / (x_ratio * y_ratio * 2);
       if (index < 0)
         index = 0;
-      if (index >= (int)(sizeof(density_chars) - 1)) // Cast to int
-        index = (int)(sizeof(density_chars) - 2); // Cast to int
+      if (index >= (int)(sizeof(density_chars) - 1))
+        index = (int)(sizeof(density_chars) - 2);
       printf("%c", density_chars[index]);
     }
     printf("\n");
