@@ -57,6 +57,9 @@ void draw_line(int x1, int y1, const int x2, const int y2) {
 
 void mark_walls(Point *points, const unsigned int point_count) {
   printf("Mark walls %u\n", point_count);
+  if (point_count == 0) {
+    return;
+  }
   for (size_t i = 0; i < point_count - 1; i++) {
     draw_line((int)points[i].x, (int)points[i].y, (int)points[i + 1].x, (int)points[i + 1].y);
   }

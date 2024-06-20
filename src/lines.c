@@ -21,51 +21,6 @@ void add_player_point(const double x, const double y) {
   }
 }
 
-void complete_shape_to_boundary() {
-  printf("complete_shape_to_boundary Points: %d\n", shape_point_count); // Debug print
-  if (shape_point_count < 2) {
-    return;
-  }
-
-  Point last_point = shape_points[shape_point_count - 1];
-  Point first_point = shape_points[0];
-
-  if (last_point.x < 0)
-    last_point.x = 0;
-  if (last_point.x > width)
-    last_point.x = width;
-  if (last_point.y < 0)
-    last_point.y = 0;
-  if (last_point.y > height)
-    last_point.y = height;
-
-  if (last_point.x != 0 && last_point.x != width && last_point.y != 0 && last_point.y != height) {
-    if (last_point.x < width / 2) {
-      shape_points[shape_point_count++] = (Point){0, last_point.y};
-      last_point.x = 0;
-    } else {
-      shape_points[shape_point_count++] = (Point){width, last_point.y};
-      last_point.x = width;
-    }
-  }
-
-  if (last_point.x == 0 || last_point.x == width) {
-    if (last_point.y != first_point.y) {
-      shape_points[shape_point_count++] = (Point){last_point.x, first_point.y};
-    }
-  } else if (last_point.y == 0 || last_point.y == height) {
-    if (last_point.x != first_point.x) {
-      shape_points[shape_point_count++] = (Point){first_point.x, last_point.y};
-    }
-  }
-
-  if (shape_points[shape_point_count - 1].x != first_point.x || shape_points[shape_point_count - 1].y != first_point.y) {
-    shape_points[shape_point_count++] = first_point;
-  }
-
-  printf("Completed shape to boundary - (%0.f, %0.f)\n", last_point.x, last_point.y);
-}
-
 int is_point_inside_shape(const Point point) {
   int count = 0;
   for (size_t i = 0; i < shape_point_count; i++) {

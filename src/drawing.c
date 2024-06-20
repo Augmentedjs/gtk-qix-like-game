@@ -116,22 +116,14 @@ void draw_bitmap(cairo_t *cr, int **bitmap) {
 
 int fill_shape() {
   if (shape_point_count < 2) {
-    return 1;
+    printf("Fill shape too small - %d\n", shape_point_count);
+    return 1; // Not enough points to form a shape
   }
   printf("Fill shape - %d\n", shape_point_count);
   if (shape_point_count < 3) {
     printf("Fill shape too small - %d\n", shape_point_count);
     return 1; // Not enough points to form a shape
   }
-
-  // Complete the shape to the boundary
-  // complete_shape_to_boundary();
-
-  // Ensure the shape has at least 4 sides
-  // if (shape_point_count < 4) {
-  //   printf("Still fill shape too small - %d\n", shape_point_count);
-  //   return;
-  // }
 
   printf("Point Count - %d\n", shape_point_count);
 
