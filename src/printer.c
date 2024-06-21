@@ -23,7 +23,7 @@ void shrink_bitmap(int **original, int reduced[NEW_HEIGHT][NEW_WIDTH]) {
 }
 
 // Function to print the reduced bitmap using different characters for different densities
-void print_bitmap(int reduced[NEW_HEIGHT][NEW_WIDTH], int x_ratio, int y_ratio) {
+void print_bitmap(const int reduced[NEW_HEIGHT][NEW_WIDTH], const int x_ratio, const int y_ratio) {
   printf("Printing bitmap\n");
   for (size_t h = 0; h < NEW_HEIGHT; h++) {
     for (size_t w = 0; w < NEW_WIDTH; w++) {

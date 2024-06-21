@@ -63,7 +63,7 @@ Point find_interior_point() {
 
   // Determine number of candidates based on shape perimeter
   const double perimeter = shape_perimeter();
-  unsigned int num_candidates = (unsigned int)(perimeter / 10); // Adjust the divisor as needed
+  unsigned int num_candidates = (unsigned int)(perimeter / 10);
   if (num_candidates < 10)
     num_candidates = 10; // Ensure a minimum number of candidates
 
