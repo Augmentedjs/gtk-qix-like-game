@@ -85,7 +85,7 @@ void draw_bitmap(cairo_t *cr, int **bitmap) {
   for (size_t y = 0; y < (size_t)height; y++) {
     size_t x = 0;
     while (x < (size_t)width) {
-      int pixel = bitmap[y][x];
+      const int pixel = bitmap[y][x];
       if (pixel != EMPTY) {
         // Find the length of the continuous segment of the same pixel type
         size_t segment_length = 1;
@@ -93,12 +93,15 @@ void draw_bitmap(cairo_t *cr, int **bitmap) {
           segment_length++;
         }
 
+        double stroke = 1.0;
         if (pixel == WALL) {
           cairo_set_source_rgb(cr, colors[FAST_FILL_BORDER_COLOR][0], colors[FAST_FILL_BORDER_COLOR][1], colors[FAST_FILL_BORDER_COLOR][2]);
+          stroke = 2.0;
+        } else if (pixel == FILLED) {
           cairo_set_source_rgb(cr, colors[FAST_FILL_COLOR][0], colors[FAST_FILL_COLOR][1], colors[FAST_FILL_COLOR][2]);
         }
 
-        cairo_rectangle(cr, x, y, segment_length, 1);
+        cairo_rectangle(cr, x, y, segment_length, stroke);
         cairo_fill(cr);
 
         // Move x to the end of the current segment
@@ -111,25 +114,16 @@ void draw_bitmap(cairo_t *cr, int **bitmap) {
   }
 }
 
-void fill_shape(cairo_t *cr) {
-  (void)cr;  // Mark cr as unused
+int fill_shape() {
   if (shape_point_count < 2) {
-    return;
+    printf("Fill shape too small - %d\n", shape_point_count);
+    return 1; // Not enough points to form a shape
   }
   printf("Fill shape - %d\n", shape_point_count);
   if (shape_point_count < 3) {
     printf("Fill shape too small - %d\n", shape_point_count);
-    return; // Not enough points to form a shape
+    return 1; // Not enough points to form a shape
   }
-
-  // Complete the shape to the boundary
-  // complete_shape_to_boundary();
-
-  // Ensure the shape has at least 4 sides
-  // if (shape_point_count < 4) {
-  //   printf("Still fill shape too small - %d\n", shape_point_count);
-  //   return;
-  // }
 
   printf("Point Count - %d\n", shape_point_count);
 
@@ -138,16 +132,16 @@ void fill_shape(cairo_t *cr) {
 
   // Find a starting point for flood fill inside the shape
   const Point start = find_interior_point();
-  printf("Starting flood fill at: (X: %d, Y: %d)\n", (int)start.x, (int)start.y); // Debug print
 
   // Perform flood fill
   flood_fill((int)start.x, (int)start.y);
 
   // Reset the points after filling
-  // shape_point_count = 0;
-  // player_line_count = 0;
+  shape_point_count = 0;
+  player_line_count = 0;
 
-  // printf("Shape Points reset\n");
+  printf("Shape Points reset\n");
+  return 0;
 }
 
 void draw_player_lines(cairo_t *cr) {
@@ -158,6 +152,13 @@ void draw_player_lines(cairo_t *cr) {
     cairo_line_to(cr, player_lines[i].x2, player_lines[i].y2);
     cairo_stroke(cr);
   }
+}
+
+void draw_QIX_center(cairo_t *cr) {
+  cairo_set_source_rgb(cr, colors[GREEN][0], colors[GREEN][1], colors[GREEN][2]);
+  cairo_set_line_width(cr, 4.0);
+  cairo_rectangle(cr, qix_monster_x - 2, qix_monster_y - 2, 2, 2);
+  cairo_stroke(cr);
 }
 
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
@@ -174,9 +175,11 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
 
   // Fill the shape if drawing is complete
   if (drawing_complete) {
-    fill_shape(cr);
-    // Print bitmap summary for debugging
-    print_bitmap_summary();
+    const int ret = fill_shape();
+    if (ret == 0) {
+      // Print bitmap summary for debugging
+      print_bitmap_summary();
+    }
     drawing_complete = FALSE; // Reset the flag after filling
   }
 
@@ -187,6 +190,8 @@ void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer 
 
   // Draw the current line
   draw_QIX_line(cr, qix_line_x1, qix_line_y1, qix_line_x2, qix_line_y2, 1.0, 2.0, qix_color_index);
+
+  draw_QIX_center(cr);
 
   if (!drawing_complete) {
     // Draw player-drawn lines

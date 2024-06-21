@@ -13,6 +13,10 @@ double random_range(const int min, const int max) {
   return (double) (min + rand() % (max - min + 1));
 }
 
+double clamp(const double value, const double min, const double max) {
+  return value < min ? min : (value > max ? max : value);
+}
+
 // Function to generate a random line within the specified constraints
 void generate_random_line(const int max_distance, Point* p1, Point* p2) {
   // Generate the first point randomly within the window bounds
@@ -96,9 +100,6 @@ void update_line_position(double *x, double *y, double *dx, double *dy, gboolean
     *dy = -*dy;
     *bounced = TRUE;
   }
-
-  qix_monster_x = (int)((double)((*x + *dx) / 2));
-  qix_monster_y = (int)((double)((*x + *dx) / 2));
 }
 
 void randomize_direction_and_speed(double *dx, double *dy) {
@@ -118,6 +119,9 @@ void update_positions_and_trails() {
   // Update line position for both points
   update_line_position(&qix_line_x1, &qix_line_y1, &dx1, &dy1, &bounced1);
   update_line_position(&qix_line_x2, &qix_line_y2, &dx2, &dy2, &bounced2);
+
+  qix_monster_x = (int)((double)((qix_line_x1 + qix_line_x2) / 2));
+  qix_monster_y = (int)((double)((qix_line_y1 + qix_line_y2) / 2));
 
   // Increment the update counter
   update_counter++;

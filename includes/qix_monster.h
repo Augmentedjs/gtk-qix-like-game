@@ -26,6 +26,7 @@ extern unsigned int update_counter; // Counter for direction changes
 extern double speed;
 extern const double MAX_DISTANCE;
 
+double clamp(const double value, const double min, const double max);
 double random_range(const int min, const int max);
 void generate_random_line(const int max_distance, Point* p1, Point* p2);
 void add_trail_point(const double x, const double y);

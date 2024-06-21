@@ -11,14 +11,26 @@ x QIX Monster trails are too close and mirror direction vs a 'tail'
 . QIX Monster doesn't bounce off walls
 . QIX Monster doesn't kill player if touched
 . Need a title area on field
-. Title area should have the lives, area, time, level, and score
+. Title area
+  - lives
+  - area
+  - time
+  - level
+  - score
 . Size of playfield should be a param (default to 640x480)
+  - Maybe not, but perhaps a zoom?  Or aspect change?
 . Player animations - start
 . Player animations - explode
 . Levels
 . Sparks on higher levels
 . Multiple QIX Monsters
 . Sounds
+  - Moving
+  - QIX
+  - Fill
+  - Explode
+  - Moving
+  - Drawing
 . Implement rules of game - time limit
 . Implement rules of game - lives
 . Implement rules of game - area score

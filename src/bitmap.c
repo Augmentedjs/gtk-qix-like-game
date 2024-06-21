@@ -39,7 +39,7 @@ void draw_line(int x1, int y1, const int x2, const int y2) {
   while (1) {
     if (x1 >= 0 && x1 < width && y1 >= 0 && y1 < height) {
       bitmap[y1][x1] = WALL;
-      printf("Marked wall at: (X: %d, Y: %d)\n", x1, y1); // Debug print
+      //printf("Marked wall at: (X: %d, Y: %d)\n", x1, y1); // Debug print
     }
     if (x1 == x2 && y1 == y2)
       break;
@@ -56,23 +56,15 @@ void draw_line(int x1, int y1, const int x2, const int y2) {
 }
 
 void mark_walls(Point *points, const unsigned int point_count) {
-  printf("Mark walls %u\n", point_count);  // Corrected format specifier
+  printf("Mark walls %u\n", point_count);
+  if (point_count == 0) {
+    return;
+  }
   for (size_t i = 0; i < point_count - 1; i++) {
     draw_line((int)points[i].x, (int)points[i].y, (int)points[i + 1].x, (int)points[i + 1].y);
   }
   // Draw line from the last point to the first to close the shape
   //draw_line((int)points[point_count - 1].x, (int)points[point_count - 1].y, (int)points[0].x, (int)points[0].y);
-}
-
-void convert_filled_area_to_points(Point *filled_points, unsigned int *point_count) {
-  *point_count = 0;
-  for (size_t y = 0; y < (size_t)height; y++) {
-    for (size_t x = 0; x < (size_t)width; x++) {
-      if (bitmap[y][x] == FILLED) {
-        filled_points[(*point_count)++] = (Point){x, y};
-      }
-    }
-  }
 }
 
 void flood_fill(const int x, const int y) {
@@ -97,7 +89,7 @@ void flood_fill(const int x, const int y) {
 
   // Enqueue the initial point
   queue[queue_end++] = (Point){x, y};
-  printf("Initial point enqueued\n");
+  printf("Initial point enqueued - (%d, %d)\n", x, y);
 
   while (queue_start < queue_end) {
     const Point p = queue[queue_start++];
@@ -128,7 +120,7 @@ void flood_fill(const int x, const int y) {
       queue[queue_end++] = (Point){px, py - 1};
 
     // Debugging output
-    printf("Processing point: (X: %d, Y: %d), Queue start: %d, Queue end: %d\n", px, py, queue_start, queue_end);
+    //printf("Processing point: (X: %d, Y: %d), Queue start: %d, Queue end: %d\n", px, py, queue_start, queue_end);
 
     if (queue_end >= queue_size) {
       fprintf(stderr, "Queue overflow: queue_end (%d) exceeds maximum size (%d)\n", queue_end, width * height);
