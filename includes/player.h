@@ -7,7 +7,7 @@
 
 #define PLAYER_DOT_COUNT 20
 #define PLAYER_DEFAULT_SPEED 5.0
-#define PLAYER_SUPER_SPEED 8.0
+#define PLAYER_SUPER_SPEED 3.0
 
 void update_player_position(const double x, const double y);
 void initialize_player_position();

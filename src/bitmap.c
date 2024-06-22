@@ -30,10 +30,10 @@ void free_bitmap() {
 }
 
 void draw_line(int x1, int y1, const int x2, const int y2) {
-  int dx = abs(x2 - x1);
-  int dy = abs(y2 - y1);
-  int sx = x1 < x2 ? 1 : -1;
-  int sy = y1 < y2 ? 1 : -1;
+  const int dx = abs(x2 - x1);
+  const int dy = abs(y2 - y1);
+  const int sx = x1 < x2 ? 1 : -1;
+  const int sy = y1 < y2 ? 1 : -1;
   int err = dx - dy;
 
   while (1) {
@@ -43,7 +43,7 @@ void draw_line(int x1, int y1, const int x2, const int y2) {
     }
     if (x1 == x2 && y1 == y2)
       break;
-    int e2 = err * 2;
+    const int e2 = err * 2;
     if (e2 > -dy) {
       err -= dy;
       x1 += sx;

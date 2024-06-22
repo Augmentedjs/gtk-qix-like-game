@@ -17,6 +17,7 @@ int fill_shape();
 void draw_player_lines(cairo_t *cr);
 void on_draw(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data);
 
+void draw_bitmap(cairo_t *cr, int **bitmap);
 void draw_text(cairo_t *cr);
 void draw_background(cairo_t *cr);
 void draw_border(cairo_t *cr);
