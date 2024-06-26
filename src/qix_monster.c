@@ -12,6 +12,7 @@ unsigned int direction_change_interval = 75;
 unsigned int update_counter = 0;
 double speed = 0;
 const double MAX_DISTANCE = 50;
+const double MAX_SPEED = 4.0; // Define the maximum speed
 
 double random_range(const int min, const int max) {
   return (double)(min + rand() % (max - min + 1));
@@ -71,22 +72,31 @@ void initialize_positions_and_directions() {
 int is_colliding_with_wall(const Point p) {
   int x = (int)round(p.x);
   int y = (int)round(p.y);
-  return bitmap_get_value(x, y) == WALL;
+  int value = bitmap_get_value(x, y);
+  return value == WALL || value == FILLED;
 }
 
 void update_line_position(double *x, double *y, double *dx, double *dy, gboolean *bounced) {
   *bounced = FALSE;
-  double next_x = *x + *dx;
-  double next_y = *y + *dy;
+  double next_x = *x;
+  double next_y = *y;
+  int steps = (int)ceil(speed);
 
-  Point next_point = {round(next_x), round(next_y)};
-  if (is_colliding_with_wall(next_point)) {
-    randomize_direction_and_speed(dx, dy);
-    *bounced = TRUE;
-  } else {
-    *x = next_x;
-    *y = next_y;
+  for (int step = 1; step <= steps; step++) {
+    double check_x = *x + (*dx * step / steps);
+    double check_y = *y + (*dy * step / steps);
+
+    Point next_point = {round(check_x), round(check_y)};
+    if (is_colliding_with_wall(next_point)) {
+      randomize_direction_and_speed(dx, dy);
+      *bounced = TRUE;
+      return; // Exit the function early since we found a collision
+    }
   }
+
+  // No collision detected; update the position
+  *x = next_x + (*dx * speed);
+  *y = next_y + (*dy * speed);
 
   if (*x <= 0) {
     *x = 0;
@@ -111,7 +121,7 @@ void update_line_position(double *x, double *y, double *dx, double *dy, gboolean
 
 void randomize_direction_and_speed(double *dx, double *dy) {
   const double angle = (rand() % 360) * (M_PI / 180.0);
-  speed = (rand() % 4 + 1);
+  speed = (rand() % (int)MAX_SPEED + 1);
 
   *dx = cos(angle) * speed;
   *dy = sin(angle) * speed;
