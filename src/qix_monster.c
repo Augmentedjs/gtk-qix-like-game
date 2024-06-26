@@ -12,7 +12,8 @@ unsigned int direction_change_interval = 75;
 unsigned int update_counter = 0;
 double speed = 0;
 const double MAX_DISTANCE = 50;
-const double MAX_SPEED = 4.0; // Define the maximum speed
+const double MAX_SPEED = 2.0;        // Define the maximum speed
+const double COLLISION_BUFFER = 1.0; // Buffer for collision detection
 
 double random_range(const int min, const int max) {
   return (double)(min + rand() % (max - min + 1));
@@ -87,33 +88,27 @@ void update_line_position(double *x, double *y, double *dx, double *dy, gboolean
     double check_y = *y + (*dy * step / steps);
 
     Point next_point = {round(check_x), round(check_y)};
-    if (is_colliding_with_wall(next_point)) {
-      randomize_direction_and_speed(dx, dy);
+    if (is_colliding_with_wall(next_point) || is_colliding_with_wall((Point){next_point.x + COLLISION_BUFFER, next_point.y + COLLISION_BUFFER})) {
+      // Reverse direction
+      *dx = -*dx;
+      *dy = -*dy;
+      *x = clamp(*x - (*dx * step / steps), 0, width - 1);  // Move back by the same amount and clamp within bounds
+      *y = clamp(*y - (*dy * step / steps), 0, height - 1); // Move back by the same amount and clamp within bounds
       *bounced = TRUE;
       return; // Exit the function early since we found a collision
     }
   }
 
   // No collision detected; update the position
-  *x = next_x + (*dx * speed);
-  *y = next_y + (*dy * speed);
+  *x = clamp(next_x + (*dx * speed), 0, width - 1);
+  *y = clamp(next_y + (*dy * speed), 0, height - 1);
 
-  if (*x <= 0) {
-    *x = 0;
-    *dx = -*dx;
-    *bounced = TRUE;
-  } else if (*x >= width) {
-    *x = width;
+  if (*x <= 0 || *x >= width) {
     *dx = -*dx;
     *bounced = TRUE;
   }
 
-  if (*y <= 0) {
-    *y = 0;
-    *dy = -*dy;
-    *bounced = TRUE;
-  } else if (*y >= height) {
-    *y = height;
+  if (*y <= 0 || *y >= height) {
     *dy = -*dy;
     *bounced = TRUE;
   }

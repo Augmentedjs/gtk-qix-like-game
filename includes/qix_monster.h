@@ -21,9 +21,9 @@ typedef struct {
 
 extern Trail trails[TRAIL_MAX];
 extern unsigned int trail_count;
-extern const double TRAIL_OFFSET; // Offset for trail spread
-extern unsigned int direction_change_interval; // Interval for direction change
-extern unsigned int update_counter; // Counter for direction changes
+extern const double TRAIL_OFFSET;
+extern unsigned int direction_change_interval;
+extern unsigned int update_counter;
 extern double speed;
 extern const double MAX_DISTANCE;
 
