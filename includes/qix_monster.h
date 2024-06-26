@@ -1,5 +1,5 @@
-#ifndef LINE_H
-#define LINE_H
+#ifndef QIX_MONSTER_H
+#define QIX_MONSTER_H
 
 #include <gtk/gtk.h>
 #include <stdio.h>
@@ -9,6 +9,7 @@
 #include "globals.h"
 #include "drawing.h"
 #include "player.h"
+#include "bitmap.h" // Include bitmap.h for wall collision detection
 
 #define TRAIL_COUNT 5
 #define TRAIL_MAX 1000
@@ -26,6 +27,7 @@ extern unsigned int update_counter; // Counter for direction changes
 extern double speed;
 extern const double MAX_DISTANCE;
 
+// Function prototypes
 double clamp(const double value, const double min, const double max);
 double random_range(const int min, const int max);
 void generate_random_line(const int max_distance, Point* p1, Point* p2);
@@ -34,5 +36,6 @@ void initialize_positions_and_directions();
 void update_positions_and_trails();
 void update_line_position(double *x, double *y, double *dx, double *dy, gboolean *bounced);
 void randomize_direction_and_speed(double *dx, double *dy);
+int is_colliding_with_wall(const Point p); // New function for collision detection
 
-#endif
+#endif // QIX_MONSTER_H

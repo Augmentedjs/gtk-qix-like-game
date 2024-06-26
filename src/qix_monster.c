@@ -1,166 +1,162 @@
 #include "includes/qix_monster.h"
+#include "includes/bitmap.h"
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+#include <stdio.h>
 
 Trail trails[TRAIL_MAX];
 unsigned int trail_count = 0;
-const double TRAIL_OFFSET = 15.0; // Increased offset for more spread-out trails
-unsigned int direction_change_interval = 75; // Interval for direction change
+const double TRAIL_OFFSET = 15.0; 
+unsigned int direction_change_interval = 75; 
 unsigned int update_counter = 0;
 double speed = 0;
 const double MAX_DISTANCE = 50;
 
-// Function to generate a random number between min and max (inclusive)
 double random_range(const int min, const int max) {
-  return (double) (min + rand() % (max - min + 1));
+    return (double) (min + rand() % (max - min + 1));
 }
 
 double clamp(const double value, const double min, const double max) {
-  return value < min ? min : (value > max ? max : value);
+    return value < min ? min : (value > max ? max : value);
 }
 
-// Function to generate a random line within the specified constraints
 void generate_random_line(const int max_distance, Point* p1, Point* p2) {
-  // Generate the first point randomly within the window bounds
-  p1->x = random_range(0, width - 1);
-  p1->y = random_range(0, height - 1);
+    p1->x = random_range(0, width - 1);
+    p1->y = random_range(0, height - 1);
 
-  // Calculate the range for the second point
-  const double min_x2 = clamp(p1->x - max_distance, 0, width - 1);
-  const double max_x2 = clamp(p1->x + max_distance, 0, width - 1);
-  const double min_y2 = clamp(p1->y - max_distance, 0, height - 1);
-  const double max_y2 = clamp(p1->y + max_distance, 0, height - 1);
+    const double min_x2 = clamp(p1->x - max_distance, 0, width - 1);
+    const double max_x2 = clamp(p1->x + max_distance, 0, width - 1);
+    const double min_y2 = clamp(p1->y - max_distance, 0, height - 1);
+    const double max_y2 = clamp(p1->y + max_distance, 0, height - 1);
 
-  // Generate the second point within the specified range
-  p2->x = random_range(min_x2, max_x2);
-  p2->y = random_range(min_y2, max_y2);
+    p2->x = random_range(min_x2, max_x2);
+    p2->y = random_range(min_y2, max_y2);
 }
 
 void add_trail_point(const double x, const double y) {
-  if (trail_count >= TRAIL_MAX) {
-    // Handle max trail points
-    return;
-  }
-  trails[trail_count].x1 = (trail_count == 0) ? x : trails[trail_count - 1].x2;
-  trails[trail_count].y1 = (trail_count == 0) ? y : trails[trail_count - 1].y2;
-  trails[trail_count].x2 = x;
-  trails[trail_count].y2 = y;
-  trails[trail_count].opacity = 1.0;
-  trail_count++;
-
-  //printf("Trail Point added: (X: %.2f, Y: %.2f)\n", x, y); // Debug print
+    if (trail_count >= TRAIL_MAX) {
+        return;
+    }
+    trails[trail_count].x1 = (trail_count == 0) ? x : trails[trail_count - 1].x2;
+    trails[trail_count].y1 = (trail_count == 0) ? y : trails[trail_count - 1].y2;
+    trails[trail_count].x2 = x;
+    trails[trail_count].y2 = y;
+    trails[trail_count].opacity = 1.0;
+    trail_count++;
 }
 
 void initialize_positions_and_directions() {
-  // Seed the random number generator
-  srand(time(NULL));
+    srand(time(NULL));
 
-  // Initialize line positions randomly within the window bounds
-  Point p1, p2;
-  // Generate a random line
-  generate_random_line(MAX_DISTANCE, &p1, &p2);
-  qix_line_x1 = p1.x;
-  qix_line_y1 = p1.y;
-  qix_line_x2 = p2.x;
-  qix_line_y2 = p2.y;
+    Point p1, p2;
+    generate_random_line(MAX_DISTANCE, &p1, &p2);
+    qix_line_x1 = p1.x;
+    qix_line_y1 = p1.y;
+    qix_line_x2 = p2.x;
+    qix_line_y2 = p2.y;
 
-  // Initialize direction vectors randomly
-  randomize_direction_and_speed(&dx1, &dy1);
-  randomize_direction_and_speed(&dx2, &dy2);
+    randomize_direction_and_speed(&dx1, &dy1);
+    randomize_direction_and_speed(&dx2, &dy2);
 
-  // Initialize trails
-  for (size_t i = 0; i < TRAIL_COUNT; i++) {
-    trails[i].x1 = qix_line_x1;
-    trails[i].y1 = qix_line_y1;
-    trails[i].x2 = qix_line_x2;
-    trails[i].y2 = qix_line_x2;
-    trails[i].opacity = 0.0;
-  }
+    for (size_t i = 0; i < TRAIL_COUNT; i++) {
+        trails[i].x1 = qix_line_x1;
+        trails[i].y1 = qix_line_y1;
+        trails[i].x2 = qix_line_x2;
+        trails[i].y2 = qix_line_x2;
+        trails[i].opacity = 0.0;
+    }
+}
+
+int is_colliding_with_wall(const Point p) {
+  return bitmap_get_value((int)p.x, (int)p.y) == 1;
 }
 
 void update_line_position(double *x, double *y, double *dx, double *dy, gboolean *bounced) {
-  *bounced = FALSE;
-  *x += *dx;
-  *y += *dy;
+    *bounced = FALSE;
+    double next_x = *x + *dx;
+    double next_y = *y + *dy;
 
-  if (*x <= 0) {
-    *x = 0;
-    *dx = -*dx;
-    *bounced = TRUE;
-  } else if (*x >= width) {
-    *x = width;
-    *dx = -*dx;
-    *bounced = TRUE;
-  }
+    Point next_point = { next_x, next_y };
+    if (is_colliding_with_wall(next_point)) {
+        randomize_direction_and_speed(dx, dy);
+        *bounced = TRUE;
+    } else {
+        *x = next_x;
+        *y = next_y;
+    }
 
-  if (*y <= 0) {
-    *y = 0;
-    *dy = -*dy;
-    *bounced = TRUE;
-  } else if (*y >= height) {
-    *y = height;
-    *dy = -*dy;
-    *bounced = TRUE;
-  }
+    if (*x <= 0) {
+        *x = 0;
+        *dx = -*dx;
+        *bounced = TRUE;
+    } else if (*x >= width) {
+        *x = width;
+        *dx = -*dx;
+        *bounced = TRUE;
+    }
+
+    if (*y <= 0) {
+        *y = 0;
+        *dy = -*dy;
+        *bounced = TRUE;
+    } else if (*y >= height) {
+        *y = height;
+        *dy = -*dy;
+        *bounced = TRUE;
+    }
 }
 
 void randomize_direction_and_speed(double *dx, double *dy) {
-  const double angle = (rand() % 360) * (M_PI / 180.0); // Random angle in radians
-  speed = (rand() % 4 + 1); // Random speed between 1 and 4
+    const double angle = (rand() % 360) * (M_PI / 180.0);
+    speed = (rand() % 4 + 1);
 
-  *dx = cos(angle) * speed;
-  *dy = sin(angle) * speed;
+    *dx = cos(angle) * speed;
+    *dy = sin(angle) * speed;
 
-  direction_change_interval = (rand() % 50 + 50);
-  //printf("direction_change_interval %d\n", direction_change_interval);
+    direction_change_interval = (rand() % 50 + 50);
 }
 
 void update_positions_and_trails() {
-  gboolean bounced1 = FALSE, bounced2 = FALSE;
+    gboolean bounced1 = FALSE, bounced2 = FALSE;
 
-  // Update line position for both points
-  update_line_position(&qix_line_x1, &qix_line_y1, &dx1, &dy1, &bounced1);
-  update_line_position(&qix_line_x2, &qix_line_y2, &dx2, &dy2, &bounced2);
+    update_line_position(&qix_line_x1, &qix_line_y1, &dx1, &dy1, &bounced1);
+    update_line_position(&qix_line_x2, &qix_line_y2, &dx2, &dy2, &bounced2);
 
-  qix_monster_x = (int)((double)((qix_line_x1 + qix_line_x2) / 2));
-  qix_monster_y = (int)((double)((qix_line_y1 + qix_line_y2) / 2));
+    qix_monster_x = (int)((qix_line_x1 + qix_line_x2) / 2);
+    qix_monster_y = (int)((qix_line_y1 + qix_line_y2) / 2);
 
-  // Increment the update counter
-  update_counter++;
+    update_counter++;
 
-  // Randomize direction and speed at specific intervals
-  if (update_counter >= direction_change_interval) {
-    randomize_direction_and_speed(&dx1, &dy1);
-    randomize_direction_and_speed(&dx2, &dy2);
-    update_counter = 0; // Reset the counter
-  }
+    if (update_counter >= direction_change_interval) {
+        randomize_direction_and_speed(&dx1, &dy1);
+        randomize_direction_and_speed(&dx2, &dy2);
+        update_counter = 0;
+    }
 
-  // Change color only if any point bounces off the boundary
-  if (bounced1 || bounced2) {
-    qix_color_index = (qix_color_index + 1) % (COLOR_COUNT - 1) + 1; // skip 'black'
-  }
+    if (bounced1 || bounced2) {
+        qix_color_index = (qix_color_index + 1) % (COLOR_COUNT - 1) + 1;
+    }
 
-  // Update trails
-  for (size_t i = TRAIL_COUNT - 1; i > 0; i--) {
-    trails[i] = trails[i - 1];
-    trails[i].opacity -= 1.0 / TRAIL_COUNT; // Decrease opacity for fading effect
-  }
+    for (size_t i = TRAIL_COUNT - 1; i > 0; i--) {
+        trails[i] = trails[i - 1];
+        trails[i].opacity -= 1.0 / TRAIL_COUNT;
+    }
 
-  // Set the position for the first trail
-  trails[0].x1 = qix_line_x1;
-  trails[0].y1 = qix_line_y1;
-  trails[0].x2 = qix_line_x2;
-  trails[0].y2 = qix_line_y2;
-  trails[0].opacity = 1.0;
+    trails[0].x1 = qix_line_x1;
+    trails[0].y1 = qix_line_y1;
+    trails[0].x2 = qix_line_x2;
+    trails[0].y2 = qix_line_y2;
+    trails[0].opacity = 1.0;
 
-  // Apply offset to the remaining trails
+    const double offset_modifier = TRAIL_OFFSET * speed;
 
-  const double offset_modifier = TRAIL_OFFSET * speed;
+    for (size_t i = 1; i < TRAIL_COUNT; i++) {
+        const double trail_modifier = (offset_modifier * (0.25 * (i)));
 
-  for (size_t i = 1; i < TRAIL_COUNT; i++) {
-    const double trail_modifier = (offset_modifier * (0.25 * (i)));
-
-    trails[i].x1 = trails[i - 1].x1 - trail_modifier * dx1 / sqrt(dx1 * dx1 + dy1 * dy1);
-    trails[i].y1 = trails[i - 1].y1 - trail_modifier * dy1 / sqrt(dx1 * dx1 + dy1 * dy1);
-    trails[i].x2 = trails[i - 1].x2 - trail_modifier * dx2 / sqrt(dx2 * dx2 + dy2 * dy2);
-    trails[i].y2 = trails[i - 1].y2 - trail_modifier * dy2 / sqrt(dx2 * dx2 + dy2 * dy2);
-  }
+        trails[i].x1 = trails[i - 1].x1 - trail_modifier * dx1 / sqrt(dx1 * dx1 + dy1 * dy1);
+        trails[i].y1 = trails[i - 1].y1 - trail_modifier * dy1 / sqrt(dx1 * dx1 + dy1 * dy1);
+        trails[i].x2 = trails[i - 1].x2 - trail_modifier * dx2 / sqrt(dx2 * dx2 + dy2 * dy2);
+        trails[i].y2 = trails[i - 1].y2 - trail_modifier * dy2 / sqrt(dx2 * dx2 + dy2 * dy2);
+    }
 }
