@@ -120,6 +120,8 @@ void flood_fill(const int x, const int y) {
   }
 
   free(queue);
+  queue = NULL; // Ensure we don't double-free
+  printf("Queue freed\n");
 }
 
 void print_bitmap_summary() {
