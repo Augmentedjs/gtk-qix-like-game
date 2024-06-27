@@ -116,16 +116,16 @@ void draw_bitmap(cairo_t *cr, int **bitmap) {
 
 int fill_shape() {
   if (shape_point_count < 2) {
-    printf("Fill shape too small - %d\n", shape_point_count);
+    //printf("Fill shape too small - %d\n", shape_point_count);
     return 1; // Not enough points to form a shape
   }
   printf("Fill shape - %d\n", shape_point_count);
   if (shape_point_count < 3) {
-    printf("Fill shape too small - %d\n", shape_point_count);
+    //printf("Fill shape too small - %d\n", shape_point_count);
     return 1; // Not enough points to form a shape
   }
 
-  printf("Point Count - %d\n", shape_point_count);
+  //printf("Point Count - %d\n", shape_point_count);
 
   // Mark the walls in the bitmap (for fill)
   mark_walls(shape_points, shape_point_count);
@@ -140,7 +140,7 @@ int fill_shape() {
   shape_point_count = 0;
   player_line_count = 0;
 
-  printf("Shape Points reset\n");
+  //printf("Shape Points reset\n");
   return 0;
 }
 

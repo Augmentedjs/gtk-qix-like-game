@@ -7,13 +7,13 @@ int **bitmap;
 void initialize_bitmap() {
   bitmap = (int **)malloc(height * sizeof(int *));
   if (!bitmap) {
-    printf("Memory allocation failed for bitmap rows\n");
+    fprintf(stderr, "Memory allocation failed for bitmap rows\n");
     return;
   }
   for (size_t y = 0; y < (size_t)height; y++) {
     bitmap[y] = (int *)malloc(width * sizeof(int));
     if (!bitmap[y]) {
-      printf("Memory allocation failed for bitmap columns at row %zu\n", y);
+      fprintf(stderr, "Memory allocation failed for bitmap columns at row %zu\n", y);
       return;
     }
     for (size_t x = 0; x < (size_t)width; x++) {
@@ -121,10 +121,9 @@ void flood_fill(const int x, const int y) {
 
   free(queue);
   queue = NULL; // Ensure we don't double-free
-  printf("Queue freed\n");
+  //printf("Queue freed\n");
 }
 
 void print_bitmap_summary() {
-  printf("Bitmap summary:\n");
   reduce_and_print_bitmap(bitmap);
 }
