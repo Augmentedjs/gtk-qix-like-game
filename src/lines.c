@@ -14,7 +14,7 @@ void add_player_point(const double x, const double y) {
   if (shape_point_count > 0 &&
       shape_points[shape_point_count - 1].x == x &&
       shape_points[shape_point_count - 1].y == y) {
-    printf("Won't add duplicate point!\n");
+    //printf("Won't add duplicate point!\n");
   } else {
     shape_points[shape_point_count++] = (Point){x, y};
     printf("Shape Point added: (X: %.0f, Y: %.0f)\n", x, y); // Debug print
