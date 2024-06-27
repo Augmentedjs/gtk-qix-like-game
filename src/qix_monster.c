@@ -1,9 +1,4 @@
 #include "includes/qix_monster.h"
-#include "includes/bitmap.h"
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 
 Trail trails[TRAIL_MAX];
 unsigned int trail_count = 0;
@@ -11,9 +6,13 @@ const double TRAIL_OFFSET = 15.0;
 unsigned int direction_change_interval = 75;
 unsigned int update_counter = 0;
 double speed = 0;
+double last_x1 = -1, last_y1 = -1, last_x2 = -1, last_y2 = -1;
+unsigned int stuck_counter1 = 0, stuck_counter2 = 0;
 const double MAX_DISTANCE = 50;
-const double MAX_SPEED = 2.0;        // Define the maximum speed
-const double COLLISION_BUFFER = 1.0; // Buffer for collision detection
+const double MAX_SPEED = 2.0;
+const double COLLISION_BUFFER = 3.0;
+const unsigned int MAX_DIRECTION_CHANGE_INTERVAL = 50;
+const unsigned int MAX_STUCK_COUNT = 2;
 
 double random_range(const int min, const int max) {
   return (double)(min + rand() % (max - min + 1));
@@ -71,37 +70,45 @@ void initialize_positions_and_directions() {
 }
 
 int is_colliding_with_wall(const Point p) {
-  int x = (int)round(p.x);
-  int y = (int)round(p.y);
+  const int x = (int)ceil(p.x);
+  const int y = (int)ceil(p.y);
   int value = bitmap_get_value(x, y);
   return value == WALL || value == FILLED;
 }
 
-void update_line_position(double *x, double *y, double *dx, double *dy, gboolean *bounced) {
+void handle_collision(double *x, double *y, double *dx, double *dy) {
+  *dx = -*dx;
+  *dy = -*dy;
+  *x = clamp(*x - (*dx * (speed + COLLISION_BUFFER)), 0, width - 1);
+  *y = clamp(*y - (*dy * (speed + COLLISION_BUFFER)), 0, height - 1);
+}
+
+void update_line_position(double *x, double *y, double *dx, double *dy, gboolean *bounced, double *last_x, double *last_y, unsigned int *stuck_counter) {
   *bounced = FALSE;
-  double next_x = *x;
-  double next_y = *y;
-  int steps = (int)ceil(speed);
+  const double next_x = *x + (*dx * speed);
+  const double next_y = *y + (*dy * speed);
 
-  for (int step = 1; step <= steps; step++) {
-    double check_x = *x + (*dx * step / steps);
-    double check_y = *y + (*dy * step / steps);
+  const Point next_point = {ceil(next_x), ceil(next_y)};
+  if (is_colliding_with_wall(next_point)) {
+    handle_collision(x, y, dx, dy);
+    *bounced = TRUE;
+  } else {
+    *x = clamp(next_x, 0, width - 1);
+    *y = clamp(next_y, 0, height - 1);
 
-    Point next_point = {round(check_x), round(check_y)};
-    if (is_colliding_with_wall(next_point) || is_colliding_with_wall((Point){next_point.x + COLLISION_BUFFER, next_point.y + COLLISION_BUFFER})) {
-      // Reverse direction
-      *dx = -*dx;
-      *dy = -*dy;
-      *x = clamp(*x - (*dx * step / steps), 0, width - 1);  // Move back by the same amount and clamp within bounds
-      *y = clamp(*y - (*dy * step / steps), 0, height - 1); // Move back by the same amount and clamp within bounds
-      *bounced = TRUE;
-      return; // Exit the function early since we found a collision
+    if (*x == *last_x && *y == *last_y) {
+      (*stuck_counter)++;
+      if (*stuck_counter >= MAX_STUCK_COUNT) {
+        handle_collision(x, y, dx, dy);
+        *bounced = TRUE;
+      }
+    } else {
+      *stuck_counter = 0;
     }
-  }
 
-  // No collision detected; update the position
-  *x = clamp(next_x + (*dx * speed), 0, width - 1);
-  *y = clamp(next_y + (*dy * speed), 0, height - 1);
+    *last_x = *x;
+    *last_y = *y;
+  }
 
   if (*x <= 0 || *x >= width) {
     *dx = -*dx;
@@ -121,14 +128,14 @@ void randomize_direction_and_speed(double *dx, double *dy) {
   *dx = cos(angle) * speed;
   *dy = sin(angle) * speed;
 
-  direction_change_interval = (rand() % 50 + 50);
+  direction_change_interval = (rand() % 50 + MAX_DIRECTION_CHANGE_INTERVAL);
 }
 
 void update_positions_and_trails() {
   gboolean bounced1 = FALSE, bounced2 = FALSE;
 
-  update_line_position(&qix_line_x1, &qix_line_y1, &dx1, &dy1, &bounced1);
-  update_line_position(&qix_line_x2, &qix_line_y2, &dx2, &dy2, &bounced2);
+  update_line_position(&qix_line_x1, &qix_line_y1, &dx1, &dy1, &bounced1, &last_x1, &last_y1, &stuck_counter1);
+  update_line_position(&qix_line_x2, &qix_line_y2, &dx2, &dy2, &bounced2, &last_x2, &last_y2, &stuck_counter2);
 
   qix_monster_x = (int)((qix_line_x1 + qix_line_x2) / 2);
   qix_monster_y = (int)((qix_line_y1 + qix_line_y2) / 2);
