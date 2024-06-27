@@ -76,11 +76,25 @@ int is_colliding_with_wall(const Point p) {
   return value == WALL || value == FILLED;
 }
 
+Point find_valid_position(double x, double y, double dx, double dy) {
+  int directions[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+  for (int i = 0; i < 4; i++) {
+    double new_x = x + directions[i][0];
+    double new_y = y + directions[i][1];
+    Point new_point = {new_x, new_y};
+    if (!is_colliding_with_wall(new_point)) {
+      return new_point;
+    }
+  }
+  return (Point){x - dx, y - dy};
+}
+
 void handle_collision(double *x, double *y, double *dx, double *dy) {
   *dx = -*dx;
   *dy = -*dy;
-  *x = clamp(*x - (*dx * (speed + COLLISION_BUFFER)), 0, width - 1);
-  *y = clamp(*y - (*dy * (speed + COLLISION_BUFFER)), 0, height - 1);
+  Point valid_position = find_valid_position(*x, *y, *dx, *dy);
+  *x = valid_position.x;
+  *y = valid_position.y;
 }
 
 void update_line_position(double *x, double *y, double *dx, double *dy, gboolean *bounced, double *last_x, double *last_y, unsigned int *stuck_counter) {
