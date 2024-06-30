@@ -98,10 +98,47 @@ After building the project, you can run the game using the following command:
 
 ## TODO
 
-- Add game rules and objectives.
-- Implement additional game features.
-- Improve graphics and animations.
-- Sound effects
+Stuff to work on with QIX
+
+* Shapes only fill away from QIX location
+  - Defect on some cases filling over the monster
+* ~~Shapes should use area fill to close~~
+* Shape fills happen when touching a wall
+* Shapes should calculate area
+* Player should be able to move on borders of drawn shapes
+* Player doesn't look correct, should be a diamond shape
+  - Maybe
+* Player can change speed for drawing
+* ~~QIX Monster doesn't move correctly, needs face/movement algorithm~~
+* ~~QIX Monster trails are too close and mirror direction vs a 'tail'~~
+* ~~QIX Monster doesn't bounce off walls~~
+* QIX Monster doesn't kill player if touched
+* Need a title area on field
+  - lives
+  - area
+  - time
+  - level
+  - score
+* Size of playfield should be a param (default to 640x480)
+  - Maybe not, but perhaps a zoom?  Or aspect change?
+* Player animations
+  - start
+  - explode
+  - complete
+* Sparks on higher levels (post level 3)
+* Multiple QIX Monsters (level 3 on)
+* Sounds
+  - Moving
+  - QIX
+  - Fill
+  - Explode
+  - Moving
+  - Drawing
+* Implement rules of game - time limit
+* Implement rules of game - lives
+* Implement rules of game - area score
+* Implement rules of game - win from 75% or higher area captured
+* Implement rules of game - Levels
 
 ## License
 
