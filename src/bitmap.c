@@ -38,6 +38,10 @@ int bitmap_get_value(const int x, const int y) {
   return bitmap[y][x];
 }
 
+gboolean is_wall(const double x, const double y) {
+  return (bitmap_get_value((int)x, (int)y) == WALL);
+}
+
 void draw_line(int x1, int y1, const int x2, const int y2) {
   const int dx = abs(x2 - x1);
   const int dy = abs(y2 - y1);
