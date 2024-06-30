@@ -69,13 +69,13 @@ gboolean on_key_press(GtkEventControllerKey *controller, guint keyval, guint key
       last_dy = dy;
     }
 
-    // Check if player reached the boundary
-    if (player_x == 0 || player_x == width || player_y == 0 || player_y == height) {
-      if ((player_y == 0 || player_y == height) && drawing_complete == FALSE) {
+    // Check if player reached the boundary or hit a wall
+    if (player_x == 0 || player_x == width || player_y == 0 || player_y == height || is_wall(player_x, player_y)) {
+      if ((player_y == 0 || player_y == height || is_wall(player_x, player_y)) && drawing_complete == FALSE) {
         // Complete shape vertically
         add_player_point(player_x, player_y);
         add_player_point(last_player_x, player_y);
-      } else if ((player_x == 0 || player_x == width) && drawing_complete == FALSE) {
+      } else if ((player_x == 0 || player_x == width || is_wall(player_x, player_y)) && drawing_complete == FALSE) {
         // Complete shape horizontally
         add_player_point(player_x, player_y);
         add_player_point(player_x, last_player_y);

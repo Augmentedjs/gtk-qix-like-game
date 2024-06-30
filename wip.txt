@@ -1,17 +1,19 @@
 Stuff to work on with QIX
 
-. Shapes only fill away from QIX location
+- Shapes only fill away from QIX location
+  - Defect on some cases filling over the monster
 x Shapes should use area fill to close
+. Shape fills happen when touching a wall
 . Shapes should calculate area
 . Player should be able to move on borders of drawn shapes
 . Player doesn't look correct, should be a diamond shape
+  - Maybe
 . Player can change speed for drawing
 x QIX Monster doesn't move correctly, needs face/movement algorithm
 x QIX Monster trails are too close and mirror direction vs a 'tail'
-. QIX Monster doesn't bounce off walls
+x QIX Monster doesn't bounce off walls
 . QIX Monster doesn't kill player if touched
 . Need a title area on field
-. Title area
   - lives
   - area
   - time
@@ -19,11 +21,12 @@ x QIX Monster trails are too close and mirror direction vs a 'tail'
   - score
 . Size of playfield should be a param (default to 640x480)
   - Maybe not, but perhaps a zoom?  Or aspect change?
-. Player animations - start
-. Player animations - explode
-. Levels
-. Sparks on higher levels
-. Multiple QIX Monsters
+. Player animations
+  - start
+  - explode
+  - complete
+. Sparks on higher levels (post level 3)
+. Multiple QIX Monsters (level 3 on)
 . Sounds
   - Moving
   - QIX
